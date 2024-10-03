@@ -1,7 +1,6 @@
 import Phaser from "phaser";
 import { Boot } from "./scenes/Boot";
 import { Game } from "./scenes/Game";
-import { Terrain } from "./scenes/Terrain";
 import { GameOver } from "./scenes/GameOver";
 import { MainMenu } from "./scenes/MainMenu";
 import { Preloader } from "./scenes/Preloader";
@@ -25,7 +24,7 @@ const config = {
       debug: true,
     },
   },
-  scene: [Boot, Preloader, MainMenu, Game, Terrain, GameOver],
+  scene: [Boot, Preloader, MainMenu, Game, GameOver],
 };
 
 export default new Phaser.Game(config);

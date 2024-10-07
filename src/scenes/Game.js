@@ -7,10 +7,6 @@ export class Game extends Scene {
 
   create() {
     this.matter.world.setBounds();
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-    // camera
-    this.cameras.main.setBackgroundColor(0x00ff00);
 
     // background
     this.add.image(512, 384, "background").setAlpha(0.5);
@@ -61,6 +57,15 @@ export class Game extends Scene {
     const spring5 = this.matter.add.constraint(head, this.torso, 60, stiffness, { damping: damping, pointA: { x: -15, y: -10 }, pointB: { x: 0, y: -25 } });
 
     this.matter.composite.add(mandalBody, [spring1, spring2, spring3, spring4, spring5]);
+
+    //--------
+    // Camera
+    this.cameras.main.setBackgroundColor(0x00ff00);
+    this.cameras.main.startFollow(this.torso);
+
+    //----------
+    // Controls
+    this.cursors = this.input.keyboard.createCursorKeys();
   }
 
   update() {

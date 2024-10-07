@@ -9,17 +9,17 @@ importers:
   .:
     dependencies:
       phaser:
-        specifier: ^3.80.1
+        specifier: ^3.85.2
         version: 3.85.2
       simplify-js:
         specifier: ^1.2.4
         version: 1.2.4
     devDependencies:
       terser:
-        specifier: ^5.31.6
+        specifier: ^5.34.1
         version: 5.34.1
       vite:
-        specifier: ^5.4.2
+        specifier: ^5.4.8
         version: 5.4.8(terser@5.34.1)
 
 packages:

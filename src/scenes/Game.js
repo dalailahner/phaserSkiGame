@@ -47,7 +47,7 @@ export class Game extends Scene {
     const spring1 = this.matter.add.constraint(ski, calfs, 140, stiffness, { damping: damping, pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
     const spring2 = this.matter.add.constraint(ski, thighs, 135, stiffness, { damping: damping, pointA: { x: -100, y: 10 }, pointB: { x: -15, y: -10 } });
     const spring3 = this.matter.add.constraint(thighs, this.torso, 60, stiffness, { damping: damping, pointA: { x: 45, y: 10 }, pointB: { x: 55, y: -10 } });
-    const spring4 = this.matter.add.constraint(this.torso, arm, 50, stiffness, { damping: damping, pointA: { x: -50, y: 20 }, pointB: { x: -20, y: 10 } });
+    const spring4 = this.matter.add.constraint(this.torso, arm, 80, stiffness, { damping: damping, pointA: { x: -55, y: 20 }, pointB: { x: 5, y: -11 } });
     const spring5 = this.matter.add.constraint(head, this.torso, 60, stiffness, { damping: damping, pointA: { x: -15, y: -10 }, pointB: { x: 0, y: -25 } });
 
     this.matter.composite.add(this.mandalBody, [spring1, spring2, spring3, spring4, spring5]);
@@ -77,7 +77,7 @@ export class Game extends Scene {
       }
       this.spline.updateArcLengths();
 
-      // TODO: debug line
+      // TODO: debug line (delete after finishing)
       this.graphics.clear();
       this.graphics.lineStyle(5, 0xff0000);
       this.spline.draw(this.graphics, this.spline.getDistancePoints(100).length);

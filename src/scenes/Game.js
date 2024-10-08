@@ -110,6 +110,20 @@ export class Game extends Scene {
         this.spline.points.shift();
       }
     }
+    //--------------
+    // cap velocity
+    //TODO: maybe performance improvment if you only do this on torso
+    [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm].forEach((sprite) => {
+      const velocity = sprite.body.velocity;
+      const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+      if (speed > this.maxVelocity) {
+        const scale = this.maxVelocity / speed;
+        this.matter.body.setVelocity(sprite.body, {
+          x: velocity.x * scale,
+          y: velocity.y * scale,
+        });
+      }
+    });
 
     //----------
     // Controls

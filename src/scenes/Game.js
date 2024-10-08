@@ -110,6 +110,7 @@ export class Game extends Scene {
         this.spline.points.shift();
       }
     }
+
     //--------------
     // cap velocity
     //TODO: maybe performance improvment if you only do this on torso
@@ -124,6 +125,12 @@ export class Game extends Scene {
         });
       }
     });
+
+    //--------
+    // Camera
+    const torsoVelocity = this.torso.body.velocity;
+    const mappedZoomValue = this.mapValue(Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y), 0, this.maxVelocity, 1, 0.33);
+    this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
 
     //----------
     // Controls
@@ -148,5 +155,15 @@ export class Game extends Scene {
       }
       scene.floorMin = maxPoint;
     }
+  }
+
+  mapValue(value, fromMin, fromMax, toMin, toMax) {
+    const scaledValue = (Math.max(fromMin, Math.min(value, fromMax)) - fromMin) / (fromMax - fromMin);
+    const mappedValue = toMin + scaledValue * (toMax - toMin);
+    return Math.round(mappedValue * 1000) / 1000;
+  }
+
+  lerp(from, to, t) {
+    return from * (1 - t) + to * t;
   }
 }

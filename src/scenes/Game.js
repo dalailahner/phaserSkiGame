@@ -10,6 +10,7 @@ export class Game extends Scene {
     this.add.image(512, 384, "background").setAlpha(0.5);
 
     // floor
+    this.floorArr = [];
     this.floorMin = 0;
     this.spline = new Curves.Spline([
       this.game.config.width * -1,
@@ -71,26 +72,21 @@ export class Game extends Scene {
 
     //--------
     // Camera
-    this.cameras.main.setBackgroundColor(0x00ff00);
+    this.cameras.main.setBackgroundColor(this.game.config.backgroundColor);
     this.cameras.main.startFollow(this.torso);
     this.cameras.main.zoom = 1;
 
     //----------
     // Controls
     this.cursors = this.input.keyboard.createCursorKeys();
-
-    //TODO: remove the floor bodies (probably give them a label and remove them) (also remove the whole game object if there are sprites and shit on it)
-    setInterval(() => {
-      console.log("bodies in scene: ", this.matter.getMatterBodies().length);
-    }, 3000);
   }
 
   update() {
     //-------
     // Floor
-    if (this.spline.points[this.spline.points.length - 3].x < (this.game.config.width + this.cameras.main.midPoint.x) / this.cameras.main.zoom) {
+    if (this.spline.points[this.spline.points.length - 3].x < this.game.config.width + this.cameras.main.midPoint.x) {
       const oldLength = this.spline.getDistancePoints(100).length;
-      while (this.spline.points[this.spline.points.length - 3].x < (this.game.config.width + this.cameras.main.midPoint.x) / this.cameras.main.zoom) {
+      while (this.spline.points[this.spline.points.length - 3].x < this.game.config.width + this.cameras.main.midPoint.x) {
         for (let i = 0; i < 3; i++) {
           this.spline.addPoint(this.spline.getEndPoint().x + PhaserMath.Between(250, 1000), this.spline.getEndPoint().y + PhaserMath.Between(100, 500));
         }
@@ -103,11 +99,15 @@ export class Game extends Scene {
       this.spline.draw(this.graphics, this.spline.getDistancePoints(100).length);
 
       const allPoints = this.spline.getDistancePoints(100);
-      const points = allPoints.slice(oldLength - 3, -1);
+      const points = allPoints.slice(oldLength - 6, -1);
       this.drawFloorFromPoints(this, points, this.spline.points[this.spline.points.length - 3].x);
 
       while (this.spline.points.length > 20) {
         this.spline.points.shift();
+      }
+      while (this.floorArr.length > 100) {
+        this.floorArr[0].destroy();
+        this.floorArr.shift();
       }
     }
 
@@ -135,10 +135,10 @@ export class Game extends Scene {
     //----------
     // Controls
     if (this.cursors.left.isDown) {
-      this.torso.setAngularVelocity(-0.1);
+      this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
     }
     if (this.cursors.right.isDown) {
-      this.torso.setAngularVelocity(0.1);
+      this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
     }
   }
 
@@ -150,7 +150,11 @@ export class Game extends Scene {
           const current = points[i];
           const next = points[i + 1];
           const rotation = Math.atan2(next.y - current.y, next.x - current.x);
-          scene.matter.add.rectangle(current.x, current.y, 150, 150, { angle: rotation, chamfer: { radius: 50 }, collisionFilter: { group: -10 }, friction: 0.001, restitution: 0, isStatic: true });
+
+          const floorObj = this.matter.add.image(current.x, current.y, `floorSnow${PhaserMath.Between(1, 3)}`, null, { angle: rotation });
+          floorObj.setDisplaySize(150, 150);
+          floorObj.setRectangle(150, 130, { angle: rotation, chamfer: { radius: 50 }, collisionFilter: { group: -10 }, friction: 0.001, restitution: 0, isStatic: true });
+          scene.floorArr.push(floorObj);
         }
       }
       scene.floorMin = maxPoint;

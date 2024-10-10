@@ -34,8 +34,7 @@ export class Game extends Scene {
     this.mandalBody = this.matter.composite.create();
     // TODO: delete mandalStatic when finished:
     const mandalStatic = false;
-    const stiffness = 0.5;
-    const damping = 0.35;
+    const stiffness = 0.35;
     this.maxVelocity = 25;
 
     // sprites
@@ -58,13 +57,13 @@ export class Game extends Scene {
     this.matter.composite.add(this.mandalBody, [footJoint, kneeJoint, hipJoint, neckJoint, shoulderJoint]);
 
     // springs
-    const spring1 = this.matter.add.constraint(this.ski, this.calfs, 140, stiffness, { damping: damping, pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
-    const spring2 = this.matter.add.constraint(this.ski, this.thighs, 135, stiffness, { damping: damping, pointA: { x: -100, y: 10 }, pointB: { x: -15, y: -10 } });
-    const spring3 = this.matter.add.constraint(this.thighs, this.torso, 60, stiffness, { damping: damping, pointA: { x: 45, y: 10 }, pointB: { x: 55, y: -10 } });
-    const spring4 = this.matter.add.constraint(this.torso, this.arm, 80, stiffness, { damping: damping, pointA: { x: -55, y: 20 }, pointB: { x: 5, y: -11 } });
-    const spring5 = this.matter.add.constraint(this.head, this.torso, 60, stiffness, { damping: damping, pointA: { x: -15, y: -10 }, pointB: { x: 0, y: -25 } });
+    const kneeSpring = this.matter.add.constraint(this.ski, this.calfs, 140, stiffness, { pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
+    const buttSpring = this.matter.add.constraint(this.ski, this.thighs, 135, stiffness, { pointA: { x: -100, y: 10 }, pointB: { x: -15, y: -10 } });
+    const absSpring = this.matter.add.constraint(this.thighs, this.torso, 60, stiffness, { pointA: { x: 45, y: 10 }, pointB: { x: 55, y: -10 } });
+    const armSpring = this.matter.add.constraint(this.torso, this.arm, 80, 1, { damping: 1, pointA: { x: -55, y: 20 }, pointB: { x: 5, y: -11 } });
+    const headSpring = this.matter.add.constraint(this.torso, this.head, 40, 1, { damping: 1, pointA: { x: 80, y: -60 }, pointB: { x: -8, y: 12 } });
 
-    this.matter.composite.add(this.mandalBody, [spring1, spring2, spring3, spring4, spring5]);
+    this.matter.composite.add(this.mandalBody, [kneeSpring, buttSpring, absSpring, armSpring, headSpring]);
 
     //----------
     // Graphics

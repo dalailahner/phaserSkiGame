@@ -128,8 +128,13 @@ export class Game extends Scene {
     //--------
     // Camera
     const torsoVelocity = this.torso.body.velocity;
-    const mappedZoomValue = this.mapValue(Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y), 0, this.maxVelocity, 1, 0.33);
+    const mandalSpeed = Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y);
+    // zoom
+    const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, 0.33);
     this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
+    // offset
+    const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);
+    this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
 
     //----------
     // Controls

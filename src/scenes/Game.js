@@ -57,13 +57,13 @@ export class Game extends Scene {
     this.matter.composite.add(this.mandalBody, [footJoint, kneeJoint, hipJoint, neckJoint, shoulderJoint]);
 
     // springs
-    const kneeSpring = this.matter.add.constraint(this.ski, this.calfs, 140, stiffness, { pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
-    const buttSpring = this.matter.add.constraint(this.ski, this.thighs, 135, stiffness, { pointA: { x: -100, y: 10 }, pointB: { x: -15, y: -10 } });
+    this.kneeSpring = this.matter.add.constraint(this.ski, this.calfs, 140, stiffness, { pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
+    this.buttSpring = this.matter.add.constraint(this.ski, this.thighs, 105, stiffness, { pointA: { x: -40, y: 0 }, pointB: { x: -50, y: 0 } });
     const absSpring = this.matter.add.constraint(this.thighs, this.torso, 60, stiffness, { pointA: { x: 45, y: 10 }, pointB: { x: 55, y: -10 } });
-    const armSpring = this.matter.add.constraint(this.torso, this.arm, 80, 1, { damping: 1, pointA: { x: -55, y: 20 }, pointB: { x: 5, y: -11 } });
+    const armSpring = this.matter.add.constraint(this.torso, this.arm, 80, 1, { damping: 1, pointA: { x: -55, y: 25 }, pointB: { x: 5, y: -13.5 } });
     const headSpring = this.matter.add.constraint(this.torso, this.head, 40, 1, { damping: 1, pointA: { x: 80, y: -60 }, pointB: { x: -8, y: 12 } });
 
-    this.matter.composite.add(this.mandalBody, [kneeSpring, buttSpring, absSpring, armSpring, headSpring]);
+    this.matter.composite.add(this.mandalBody, [this.kneeSpring, this.buttSpring, absSpring, armSpring, headSpring]);
 
     //----------
     // Graphics
@@ -134,10 +134,28 @@ export class Game extends Scene {
     //----------
     // Controls
     if (this.cursors.left.isDown) {
-      this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
+      if (this.cursors.down.isDown) {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
+      } else {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
+      }
     }
     if (this.cursors.right.isDown) {
-      this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
+      if (this.cursors.down.isDown) {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
+      } else {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
+      }
+    }
+    if (this.cursors.down.isDown) {
+      this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
+      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
+      this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
+    }
+    if (this.cursors.down.isUp) {
+      this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
+      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
+      this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);
     }
   }
 

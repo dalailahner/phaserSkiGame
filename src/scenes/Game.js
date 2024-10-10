@@ -48,11 +48,11 @@ export class Game extends Scene {
     this.matter.composite.add(this.mandalBody, [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm]);
 
     // joints
-    const footJoint = this.matter.add.constraint(this.ski, this.calfs, 0, 0.5, { pointA: { x: -30, y: -10 }, pointB: { x: -30, y: 40 } });
-    const kneeJoint = this.matter.add.constraint(this.calfs, this.thighs, 0, 0.5, { pointA: { x: 30, y: -35 }, pointB: { x: 45, y: 10 } });
-    const hipJoint = this.matter.add.constraint(this.thighs, this.torso, 0, 0.5, { pointA: { x: -15, y: -10 }, pointB: { x: -20, y: 25 } });
-    const neckJoint = this.matter.add.constraint(this.torso, this.head, 0, 0.5, { pointA: { x: 55, y: -10 }, pointB: { x: -15, y: 25 } });
-    const shoulderJoint = this.matter.add.constraint(this.torso, this.arm, 0, 0.5, { pointA: { x: 35, y: -5 }, pointB: { x: 15, y: -15 } });
+    const footJoint = this.matter.add.constraint(this.ski, this.calfs, 0, 0.7, { pointA: { x: -30, y: -10 }, pointB: { x: -30, y: 40 } });
+    const kneeJoint = this.matter.add.constraint(this.calfs, this.thighs, 0, 0.7, { pointA: { x: 30, y: -35 }, pointB: { x: 45, y: 10 } });
+    const hipJoint = this.matter.add.constraint(this.thighs, this.torso, 0, 0.7, { pointA: { x: -15, y: -10 }, pointB: { x: -20, y: 25 } });
+    const neckJoint = this.matter.add.constraint(this.torso, this.head, 0, 0.7, { pointA: { x: 55, y: -10 }, pointB: { x: -15, y: 25 } });
+    const shoulderJoint = this.matter.add.constraint(this.torso, this.arm, 0, 0.7, { pointA: { x: 35, y: -5 }, pointB: { x: 15, y: -15 } });
 
     this.matter.composite.add(this.mandalBody, [footJoint, kneeJoint, hipJoint, neckJoint, shoulderJoint]);
 

@@ -6,6 +6,10 @@ export class Game extends Scene {
   }
 
   create() {
+    //----------
+    // Graphics
+    this.graphics = this.add.graphics();
+
     // background
     this.add.image(512, 384, "background").setAlpha(0.5);
 
@@ -25,7 +29,7 @@ export class Game extends Scene {
       this.game.config.height,
     ]);
     const allPoints = this.spline.getDistancePoints(100);
-    this.drawFloorFromPoints(this, allPoints, this.spline.points[this.spline.points.length - 1].x);
+    this.drawFloorFromPoints(allPoints, this.spline.points[this.spline.points.length - 1].x);
 
     //--------
     // Mandal
@@ -65,10 +69,6 @@ export class Game extends Scene {
 
     this.matter.composite.add(this.mandalBody, [this.kneeSpring, this.buttSpring, this.absSpring, armSpring, headSpring]);
 
-    //----------
-    // Graphics
-    this.graphics = this.add.graphics();
-
     //--------
     // Camera
     this.cameras.main.setBackgroundColor(this.game.config.backgroundColor);
@@ -92,15 +92,12 @@ export class Game extends Scene {
       }
       this.spline.updateArcLengths();
 
-      // TODO: delete debug line when finished
-      this.graphics.clear();
-      this.graphics.lineStyle(5, 0xff0000);
-      this.spline.draw(this.graphics, this.spline.getDistancePoints(100).length);
-
+      // create bodies along the spline
       const allPoints = this.spline.getDistancePoints(100);
       const points = allPoints.slice(oldLength - 6, -1);
-      this.drawFloorFromPoints(this, points, this.spline.points[this.spline.points.length - 3].x);
+      this.drawFloorFromPoints(points, this.spline.points[this.spline.points.length - 3].x);
 
+      // remove old objects
       while (this.spline.points.length > 20) {
         this.spline.points.shift();
       }
@@ -182,21 +179,36 @@ export class Game extends Scene {
   }
 
   // custom functions
-  drawFloorFromPoints(scene, points, maxPoint) {
+  drawFloorFromPoints(points, maxPoint) {
     if (points.length > 2) {
       for (let i = 0; i < points.length - 1; i++) {
-        if (scene.floorMin <= points[i].x <= maxPoint) {
+        if (this.floorMin <= points[i].x <= maxPoint) {
           const current = points[i];
           const next = points[i + 1];
           const rotation = Math.atan2(next.y - current.y, next.x - current.x);
 
+          // add image texture
           const floorObj = this.matter.add.image(current.x, current.y, `floorSnow${PhaserMath.Between(1, 3)}`, null, { angle: rotation });
           floorObj.setDisplaySize(150, 150);
+
+          // add physics body
           floorObj.setRectangle(150, 130, { angle: rotation, chamfer: { radius: 50 }, collisionFilter: { group: -10 }, friction: 0.001, restitution: 0, isStatic: true });
-          scene.floorArr.push(floorObj);
+          this.floorArr.push(floorObj);
         }
       }
-      scene.floorMin = maxPoint;
+      // fill the area beneath the points
+      const fillPoints = [...points]; // <- deep copy with spread operator
+      fillPoints.push({ x: points[points.length - 1].x, y: points[points.length - 1].y + this.game.config.height * 2 });
+      fillPoints.push({ x: points[0].x - this.game.config.width, y: points[points.length - 1].y + this.game.config.height });
+
+      // draw the area beneath the points of the spline
+      this.graphics.fillStyle(0xf5f5f5);
+      this.graphics.fillPoints(fillPoints, true, true);
+      this.graphics.lineStyle(130, 0xf5f5f5);
+      this.graphics.strokePoints(fillPoints, true, true);
+
+      // set new min point for next iteration
+      this.floorMin = maxPoint;
     }
   }
 

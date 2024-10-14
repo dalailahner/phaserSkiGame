@@ -42,6 +42,7 @@ export class Game extends Scene {
     const mandalStatic = false;
     const stiffness = 0.35;
     this.maxVelocity = 25;
+    this.ragdoll = false;
 
     // sprites
     this.ski = this.matter.add.sprite(mandalPos.x, mandalPos.y - 10, "ski", null, { shape: mandalShape.ski, isStatic: mandalStatic });
@@ -66,10 +67,10 @@ export class Game extends Scene {
     this.kneeSpring = this.matter.add.constraint(this.ski, this.calfs, 140, stiffness, { pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
     this.buttSpring = this.matter.add.constraint(this.ski, this.thighs, 105, stiffness, { pointA: { x: -40, y: 0 }, pointB: { x: -50, y: 0 } });
     this.absSpring = this.matter.add.constraint(this.thighs, this.torso, 60, stiffness, { pointA: { x: 45, y: 10 }, pointB: { x: 55, y: -10 } });
-    const armSpring = this.matter.add.constraint(this.torso, this.arm, 80, 1, { damping: 1, pointA: { x: -55, y: 25 }, pointB: { x: 5, y: -13.5 } });
-    const headSpring = this.matter.add.constraint(this.torso, this.head, 40, 1, { damping: 1, pointA: { x: 80, y: -60 }, pointB: { x: -8, y: 12 } });
+    this.armSpring = this.matter.add.constraint(this.torso, this.arm, 80, 1, { damping: 1, pointA: { x: -55, y: 25 }, pointB: { x: 5, y: -13.5 } });
+    this.headSpring = this.matter.add.constraint(this.torso, this.head, 40, 1, { damping: 1, pointA: { x: 80, y: -60 }, pointB: { x: -8, y: 12 } });
 
-    this.matter.composite.add(this.mandalBody, [this.kneeSpring, this.buttSpring, this.absSpring, armSpring, headSpring]);
+    this.matter.composite.add(this.mandalBody, [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring]);
 
     //--------
     // Camera
@@ -80,6 +81,24 @@ export class Game extends Scene {
     //----------
     // Controls
     this.cursors = this.input.keyboard.createCursorKeys();
+    //------------
+    // Collisions
+    const mandalLethalBodyParts = [this.thighs.body, this.head.body, this.torso.body];
+    this.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
+      // game over
+      if (mandalLethalBodyParts.includes(bodyA.parent) && bodyB.collisionFilter.group === -10) {
+        this.time.addEvent({
+          callback: this.gameOver(bodyA),
+          callbackScope: this,
+        });
+      }
+      if (mandalLethalBodyParts.includes(bodyB.parent) && bodyA.collisionFilter.group === -10) {
+        this.time.addEvent({
+          callback: this.gameOver(bodyB),
+          callbackScope: this,
+        });
+      }
+    });
 
     // Fixed Update Timer
     this.time.addEvent({
@@ -91,42 +110,45 @@ export class Game extends Scene {
   }
 
   fixedUpdate() {
+    //----------
     // Controls
-    // LEFT
-    if (this.cursors.left.isDown) {
-      if (this.cursors.down.isDown) {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
-      } else {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
+    if (!this.ragdoll) {
+      // LEFT
+      if (this.cursors.left.isDown) {
+        if (this.cursors.down.isDown) {
+          this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
+        } else {
+          this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
+        }
       }
-    }
-    // RIGHT
-    if (this.cursors.right.isDown) {
-      if (this.cursors.down.isDown) {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
-      } else {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
+      // RIGHT
+      if (this.cursors.right.isDown) {
+        if (this.cursors.down.isDown) {
+          this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
+        } else {
+          this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
+        }
       }
-    }
-    // DOWN
-    if (this.cursors.down.isDown) {
-      this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
-      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
-      this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
-      this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
-    }
-    // UP
-    if (this.cursors.up.isDown) {
-      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 150, 0.25);
-      this.buttSpring.length = this.lerp(this.buttSpring.length, 160, 0.25);
-      this.absSpring.length = this.lerp(this.absSpring.length, 110, 0.25);
-    }
-    // IDLE
-    if (this.cursors.up.isUp && this.cursors.down.isUp) {
-      this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
-      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
-      this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);
-      this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
+      // DOWN
+      if (this.cursors.down.isDown) {
+        this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
+        this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
+        this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
+        this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
+      }
+      // UP
+      if (this.cursors.up.isDown) {
+        this.kneeSpring.length = this.lerp(this.kneeSpring.length, 150, 0.25);
+        this.buttSpring.length = this.lerp(this.buttSpring.length, 160, 0.25);
+        this.absSpring.length = this.lerp(this.absSpring.length, 110, 0.25);
+      }
+      // IDLE
+      if (this.cursors.up.isUp && this.cursors.down.isUp) {
+        this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
+        this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
+        this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);
+        this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
+      }
     }
   }
 
@@ -217,6 +239,17 @@ export class Game extends Scene {
       // set new min point for next iteration
       this.floorMin = maxPoint;
     }
+  }
+
+  gameOver(bodyPart) {
+    console.log(`game over, you hit your: ${bodyPart.parent.label}`);
+    this.ragdoll = true;
+    [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring].forEach((spring) => {
+      spring.stiffness = 0.005;
+    });
+    setTimeout(() => {
+      this.scene.start("GameOver");
+    }, 2500);
   }
 
   mapValue(value, fromMin, fromMax, toMin, toMax) {

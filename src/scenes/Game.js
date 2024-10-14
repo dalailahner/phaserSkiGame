@@ -3,6 +3,8 @@ import { Scene, Curves, Math as PhaserMath } from "phaser";
 export class Game extends Scene {
   constructor() {
     super("Game");
+    this.fixedTimeStep = 1000 / 60;
+    this.fixedUpdateTimer = 0;
   }
 
   create() {
@@ -78,6 +80,54 @@ export class Game extends Scene {
     //----------
     // Controls
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    // Fixed Update Timer
+    this.time.addEvent({
+      delay: this.fixedTimeStep,
+      callback: this.fixedUpdate,
+      callbackScope: this,
+      loop: true,
+    });
+  }
+
+  fixedUpdate() {
+    // Controls
+    // LEFT
+    if (this.cursors.left.isDown) {
+      if (this.cursors.down.isDown) {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
+      } else {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
+      }
+    }
+    // RIGHT
+    if (this.cursors.right.isDown) {
+      if (this.cursors.down.isDown) {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
+      } else {
+        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
+      }
+    }
+    // DOWN
+    if (this.cursors.down.isDown) {
+      this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
+      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
+      this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
+      this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
+    }
+    // UP
+    if (this.cursors.up.isDown) {
+      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 150, 0.25);
+      this.buttSpring.length = this.lerp(this.buttSpring.length, 160, 0.25);
+      this.absSpring.length = this.lerp(this.absSpring.length, 110, 0.25);
+    }
+    // IDLE
+    if (this.cursors.up.isUp && this.cursors.down.isUp) {
+      this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
+      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
+      this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);
+      this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
+    }
   }
 
   update() {
@@ -107,8 +157,8 @@ export class Game extends Scene {
       }
     }
 
-    //--------------
-    // cap velocity
+    //-------------------
+    // Cap Body Velocity
     //TODO: maybe performance improvment if you only do this on torso
     [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm].forEach((sprite) => {
       const velocity = sprite.body.velocity;
@@ -132,53 +182,10 @@ export class Game extends Scene {
     // offset
     const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);
     this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
-
-    //----------
-    // Controls
-
-    // LEFT
-    if (this.cursors.left.isDown) {
-      if (this.cursors.down.isDown) {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
-      } else {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
-      }
-    }
-
-    // RIGHT
-    if (this.cursors.right.isDown) {
-      if (this.cursors.down.isDown) {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
-      } else {
-        this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
-      }
-    }
-
-    // DOWN
-    if (this.cursors.down.isDown) {
-      this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
-      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
-      this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
-      this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
-    }
-
-    // UP
-    if (this.cursors.up.isDown) {
-      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 150, 0.25);
-      this.buttSpring.length = this.lerp(this.buttSpring.length, 160, 0.25);
-      this.absSpring.length = this.lerp(this.absSpring.length, 110, 0.25);
-    }
-
-    // IDLE
-    if (this.cursors.up.isUp && this.cursors.down.isUp) {
-      this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
-      this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
-      this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);
-      this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
-    }
   }
 
-  // custom functions
+  //------------------
+  // Custom Functions
   drawFloorFromPoints(points, maxPoint) {
     if (points.length > 2) {
       for (let i = 0; i < points.length - 1; i++) {

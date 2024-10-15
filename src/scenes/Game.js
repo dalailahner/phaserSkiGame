@@ -80,7 +80,8 @@ export class Game extends Scene {
 
     //----------
     // Controls
-    this.cursors = this.input.keyboard.createCursorKeys();
+    this.keys = this.input.keyboard.addKeys("W,A,S,D,UP,LEFT,DOWN,RIGHT");
+
     //------------
     // Collisions
     const mandalLethalBodyParts = [this.thighs.body, this.head.body, this.torso.body];
@@ -114,36 +115,36 @@ export class Game extends Scene {
     // Controls
     if (!this.ragdoll) {
       // LEFT
-      if (this.cursors.left.isDown) {
-        if (this.cursors.down.isDown) {
+      if (this.keys.LEFT.isDown || this.keys.A.isDown) {
+        if (this.keys.DOWN.isDown || this.keys.S.isDown) {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
         } else {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
         }
       }
       // RIGHT
-      if (this.cursors.right.isDown) {
-        if (this.cursors.down.isDown) {
+      if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
+        if (this.keys.DOWN.isDown || this.keys.S.isDown) {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
         } else {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
         }
       }
       // DOWN
-      if (this.cursors.down.isDown) {
+      if (this.keys.DOWN.isDown || this.keys.S.isDown) {
         this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
         this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
         this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
         this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
       }
       // UP
-      if (this.cursors.up.isDown) {
+      if (this.keys.UP.isDown || this.keys.W.isDown) {
         this.kneeSpring.length = this.lerp(this.kneeSpring.length, 150, 0.25);
         this.buttSpring.length = this.lerp(this.buttSpring.length, 160, 0.25);
         this.absSpring.length = this.lerp(this.absSpring.length, 110, 0.25);
       }
       // IDLE
-      if (this.cursors.up.isUp && this.cursors.down.isUp) {
+      if (this.keys.UP.isUp && this.keys.DOWN.isUp && this.keys.W.isUp && this.keys.S.isUp) {
         this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
         this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
         this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);

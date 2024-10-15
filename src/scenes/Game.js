@@ -5,6 +5,7 @@ export class Game extends Scene {
     super("Game");
     this.fixedTimeStep = 1000 / 60;
     this.fixedUpdateTimer = 0;
+    this.maxCameraZoom = 0.33;
   }
 
   create() {
@@ -12,10 +13,21 @@ export class Game extends Scene {
     // Graphics
     this.graphics = this.add.graphics();
 
-    // background
-    this.add.image(512, 384, "background").setAlpha(0.5);
+    //--------
+    // Camera
+    this.cameras.main.setBackgroundColor(this.game.config.backgroundColor);
+    this.cameras.main.zoom = 1;
 
-    // floor
+    //------------
+    // Background
+    // TODO: fix position
+    this.mountainsBack = this.add.tileSprite(0, 0, this.game.config.width / this.maxCameraZoom, this.game.config.height / this.maxCameraZoom, "mountainsBack");
+    this.mountainsBack.setScrollFactor(0);
+    this.mountainsFront = this.add.tileSprite(0, 0, this.game.config.width / this.maxCameraZoom, this.game.config.height / this.maxCameraZoom, "mountainsFront");
+    this.mountainsFront.setScrollFactor(0);
+
+    //-------
+    // Floor
     this.floorArr = [];
     this.floorMin = 0;
     this.spline = new Curves.Spline([
@@ -52,6 +64,8 @@ export class Game extends Scene {
     this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { shape: mandalShape.torso, isStatic: mandalStatic });
     this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { shape: mandalShape.arm, isStatic: mandalStatic });
 
+    this.cameras.main.startFollow(this.torso);
+
     this.matter.composite.add(this.mandalBody, [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm]);
 
     // joints
@@ -71,12 +85,6 @@ export class Game extends Scene {
     this.headSpring = this.matter.add.constraint(this.torso, this.head, 40, 1, { damping: 1, pointA: { x: 80, y: -60 }, pointB: { x: -8, y: 12 } });
 
     this.matter.composite.add(this.mandalBody, [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring]);
-
-    //--------
-    // Camera
-    this.cameras.main.setBackgroundColor(this.game.config.backgroundColor);
-    this.cameras.main.startFollow(this.torso);
-    this.cameras.main.zoom = 1;
 
     //----------
     // Controls
@@ -200,7 +208,7 @@ export class Game extends Scene {
     const torsoVelocity = this.torso.body.velocity;
     const mandalSpeed = Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y);
     // zoom
-    const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, 0.33);
+    const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, this.maxCameraZoom);
     this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
     // offset
     const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);

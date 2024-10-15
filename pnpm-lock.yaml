@@ -19,8 +19,8 @@ importers:
         specifier: ^5.34.1
         version: 5.34.1
       vite:
-        specifier: ^5.4.8
-        version: 5.4.8(terser@5.34.1)
+        specifier: ^5.4.9
+        version: 5.4.9(terser@5.34.1)
 
 packages:
 
@@ -329,8 +329,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  vite@5.4.8:
-    resolution: {integrity: sha512-FqrItQ4DT1NC4zCUqMB4c4AZORMKIa0m8/URVCZ77OZ/QSNeJ54bU1vrFADbDsuwfIPcgknRkmqakQcgnL4GiQ==}
+  vite@5.4.9:
+    resolution: {integrity: sha512-20OVpJHh0PAM0oSOELa5GaZNWeDjcAvQjGXy2Uyr+Tp+/D2/Hdz6NLgpJLsarPTA2QJ6v8mX2P1ZfbsSKvdMkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -594,7 +594,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  vite@5.4.8(terser@5.34.1):
+  vite@5.4.9(terser@5.34.1):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47

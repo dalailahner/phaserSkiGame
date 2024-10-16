@@ -5,13 +5,16 @@ export class Game extends Scene {
     super("Game");
     this.fixedTimeStep = 1000 / 60;
     this.fixedUpdateTimer = 0;
-    this.maxCameraZoom = 0.33;
+    this.bgInputScale = 2;
+    this.prevScrollX = 0;
+    this.bottomOfSlope = 50000;
   }
 
   create() {
     //----------
     // Graphics
     this.graphics = this.add.graphics();
+    this.graphics.setDepth(10);
 
     //--------
     // Camera
@@ -20,11 +23,21 @@ export class Game extends Scene {
 
     //------------
     // Background
-    // TODO: fix position
-    this.mountainsBack = this.add.tileSprite(0, 0, this.game.config.width / this.maxCameraZoom, this.game.config.height / this.maxCameraZoom, "mountainsBack");
-    this.mountainsBack.setScrollFactor(0);
-    this.mountainsFront = this.add.tileSprite(0, 0, this.game.config.width / this.maxCameraZoom, this.game.config.height / this.maxCameraZoom, "mountainsFront");
-    this.mountainsFront.setScrollFactor(0);
+    //   sky
+    this.sky = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "sky");
+    //   mountainsBack
+    this.mountainsBack = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "mountainsBack");
+    this.mountainsBack.setAlpha(0.5);
+    //   mountainsFront
+    this.mountainsFront = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "mountainsFront");
+    this.bgElements = [this.sky, this.mountainsBack, this.mountainsFront];
+    this.bgElementsYshift = [0, 50, 300];
+    this.bgElements.forEach((element) => {
+      element.setOrigin(0.5);
+      element.setScale(1 / this.bgInputScale);
+      element.tilePositionY = 1; // <- fix top border bleeding
+      element.setScrollFactor(0);
+    });
 
     //-------
     // Floor
@@ -56,19 +69,21 @@ export class Game extends Scene {
     this.maxVelocity = 25;
     this.ragdoll = false;
 
-    // sprites
+    //   sprites
     this.ski = this.matter.add.sprite(mandalPos.x, mandalPos.y - 10, "ski", null, { shape: mandalShape.ski, isStatic: mandalStatic });
     this.calfs = this.matter.add.sprite(mandalPos.x, mandalPos.y - 60, "calfs", null, { shape: mandalShape.calfs, isStatic: mandalStatic });
     this.thighs = this.matter.add.sprite(mandalPos.x - 15, mandalPos.y - 105, "thighs", null, { shape: mandalShape.thighs, isStatic: mandalStatic });
     this.head = this.matter.add.sprite(mandalPos.x + 60, mandalPos.y - 180, "head", null, { shape: mandalShape.head, isStatic: mandalStatic });
     this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { shape: mandalShape.torso, isStatic: mandalStatic });
+    this.cameras.main.startFollow(this.torso);
+    this.updateBgYshift();
     this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { shape: mandalShape.arm, isStatic: mandalStatic });
 
-    this.cameras.main.startFollow(this.torso);
+    const mandalSprites = [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm];
+    mandalSprites.forEach((sprite) => sprite.setDepth(10));
+    this.matter.composite.add(this.mandalBody, mandalSprites);
 
-    this.matter.composite.add(this.mandalBody, [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm]);
-
-    // joints
+    //   joints
     const footJoint = this.matter.add.constraint(this.ski, this.calfs, 0, 0.7, { pointA: { x: -30, y: -10 }, pointB: { x: -30, y: 40 } });
     const kneeJoint = this.matter.add.constraint(this.calfs, this.thighs, 0, 0.7, { pointA: { x: 30, y: -35 }, pointB: { x: 45, y: 10 } });
     const hipJoint = this.matter.add.constraint(this.thighs, this.torso, 0, 0.7, { pointA: { x: -15, y: -10 }, pointB: { x: -20, y: 25 } });
@@ -77,7 +92,7 @@ export class Game extends Scene {
 
     this.matter.composite.add(this.mandalBody, [footJoint, kneeJoint, hipJoint, neckJoint, shoulderJoint]);
 
-    // springs
+    //   springs
     this.kneeSpring = this.matter.add.constraint(this.ski, this.calfs, 140, stiffness, { pointA: { x: 125, y: 10 }, pointB: { x: 30, y: -35 } });
     this.buttSpring = this.matter.add.constraint(this.ski, this.thighs, 105, stiffness, { pointA: { x: -40, y: 0 }, pointB: { x: -50, y: 0 } });
     this.absSpring = this.matter.add.constraint(this.thighs, this.torso, 60, stiffness, { pointA: { x: 45, y: 10 }, pointB: { x: 55, y: -10 } });
@@ -190,33 +205,47 @@ export class Game extends Scene {
 
     //-------------------
     // Cap Body Velocity
-    //TODO: maybe performance improvment if you only do this on torso
-    [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm].forEach((sprite) => {
-      const velocity = sprite.body.velocity;
-      const speed = Math.sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-      if (speed > this.maxVelocity) {
-        const scale = this.maxVelocity / speed;
-        this.matter.body.setVelocity(sprite.body, {
-          x: velocity.x * scale,
-          y: velocity.y * scale,
-        });
-      }
-    });
+    const torsoVelocity = this.torso.body.velocity;
+    const mandalSpeed = Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y);
+
+    if (mandalSpeed > this.maxVelocity) {
+      const scale = this.maxVelocity / mandalSpeed;
+      this.matter.body.setVelocity(this.torso.body, {
+        x: torsoVelocity.x * scale,
+        y: torsoVelocity.y * scale,
+      });
+    }
 
     //--------
     // Camera
-    const torsoVelocity = this.torso.body.velocity;
-    const mandalSpeed = Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y);
-    // zoom
-    const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, this.maxCameraZoom);
+    //   zoom
+    const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, 0.33);
     this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
-    // offset
+    //   offset
     const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);
     this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
+
+    //------------
+    // Background
+    //   counter zoom
+    this.bgElements.forEach((element) => element.setScale(1 / this.bgInputScale / this.cameras.main.zoom));
+    //   parallax
+    const scrollDistance = this.cameras.main.scrollX - this.prevScrollX;
+    this.mountainsBack.tilePositionX += scrollDistance * 0.01;
+    this.mountainsFront.tilePositionX += scrollDistance * 0.025;
+    this.prevScrollX = this.cameras.main.scrollX;
+    this.updateBgYshift();
   }
 
   //------------------
   // Custom Functions
+  updateBgYshift() {
+    const Yshift = this.mapValue(this.torso.y, 0, this.bottomOfSlope, 1, 0);
+    for (let i = 0; i < this.bgElements.length; i++) {
+      this.bgElements[i].y = this.game.config.height * this.bgElements[i].originY + this.bgElementsYshift[i] * Yshift * this.bgElements[i].scale;
+    }
+  }
+
   drawFloorFromPoints(points, maxPoint) {
     if (points.length > 2) {
       for (let i = 0; i < points.length - 1; i++) {
@@ -227,6 +256,7 @@ export class Game extends Scene {
 
           // add image texture
           const floorObj = this.matter.add.image(current.x, current.y, `floorSnow${PhaserMath.Between(1, 3)}`, null, { angle: rotation });
+          floorObj.setDepth(11);
           floorObj.setDisplaySize(150, 150);
 
           // add physics body

@@ -30,8 +30,12 @@ export class Game extends Scene {
     this.mountainsBack.setAlpha(0.5);
     //   mountainsFront
     this.mountainsFront = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "mountainsFront");
-    this.bgElements = [this.sky, this.mountainsBack, this.mountainsFront];
-    this.bgElementsYshift = [0, 50, 300];
+    //   trees
+    this.trees = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale * 2, this.game.config.height * this.bgInputScale, "trees");
+    this.trees.setAngle(25);
+    //   position
+    this.bgElements = [this.sky, this.mountainsBack, this.mountainsFront, this.trees];
+    this.bgElementsYshift = [0, 50, 300, 0];
     this.bgElements.forEach((element) => {
       element.setOrigin(0.5);
       element.setScale(1 / this.bgInputScale);
@@ -233,6 +237,7 @@ export class Game extends Scene {
     const scrollDistance = this.cameras.main.scrollX - this.prevScrollX;
     this.mountainsBack.tilePositionX += scrollDistance * 0.01;
     this.mountainsFront.tilePositionX += scrollDistance * 0.025;
+    this.trees.tilePositionX += scrollDistance * 0.1;
     this.prevScrollX = this.cameras.main.scrollX;
     this.updateBgYshift();
   }

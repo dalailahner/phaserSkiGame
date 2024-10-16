@@ -32,6 +32,7 @@ export class Preloader extends Scene {
     this.load.image("sky", "sky.jpg");
     this.load.image("mountainsBack", "mountainsBack.png");
     this.load.image("mountainsFront", "mountainsFront.png");
+    this.load.image("trees", "trees.png");
 
     // Floor
     this.load.image("floorSnow1", "floorSnow1.png");

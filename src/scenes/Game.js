@@ -237,7 +237,7 @@ export class Game extends Scene {
     const scrollDistance = this.cameras.main.scrollX - this.prevScrollX;
     this.mountainsBack.tilePositionX += scrollDistance * 0.01;
     this.mountainsFront.tilePositionX += scrollDistance * 0.025;
-    this.trees.tilePositionX += scrollDistance * 0.1;
+    this.trees.tilePositionX += scrollDistance * 0.05;
     this.prevScrollX = this.cameras.main.scrollX;
     this.updateBgYshift();
   }

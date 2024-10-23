@@ -7,7 +7,12 @@ export class Game extends Scene {
     this.fixedUpdateTimer = 0;
     this.bgInputScale = 2;
     this.prevScrollX = 0;
+    this.nextArticleSpawn = 4000;
     this.bottomOfSlope = 50000;
+  }
+
+  init(data) {
+    this.productsAmount = data.productsAmount;
   }
 
   create() {
@@ -221,6 +226,42 @@ export class Game extends Scene {
         x: torsoVelocity.x * scale,
         y: torsoVelocity.y * scale,
       });
+    }
+
+    //----------
+    // Products
+    if (this.torso.y > this.nextArticleSpawn) {
+      const floorPoint1 = new PhaserMath.Vector2(this.floorArr[this.floorArr.length - 2]);
+      const floorPoint2 = new PhaserMath.Vector2(this.floorArr[this.floorArr.length - 1]);
+      const spawnPoint = floorPoint1.add(floorPoint2).scale(0.5).add(floorPoint2.subtract(floorPoint1).normalizeLeftHand().scale(5));
+
+      const product = this.matter.add.sprite(spawnPoint.x, spawnPoint.y, `product${PhaserMath.Between(1, this.productsAmount)}`, null, { isSensor: true, isStatic: true });
+      product.setAngle(-5);
+
+      // anim
+      this.tweens.add({
+        targets: product,
+        angle: 5,
+        duration: 333,
+        yoyo: true,
+        loop: -1,
+        ease: "sine.inout",
+      });
+
+      // fx
+      product.postFX.setPadding(16);
+      const glow = product.postFX.addGlow(0xa0ff0f, 16);
+      this.tweens.add({
+        targets: glow,
+        outerStrength: 4,
+        duration: 500,
+        yoyo: true,
+        loop: -1,
+        ease: "sine.inout",
+      });
+      product.postFX.addShine(3, 0.333, 5);
+
+      this.nextArticleSpawn += 4000;
     }
 
     //--------

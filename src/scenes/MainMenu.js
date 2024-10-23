@@ -5,6 +5,10 @@ export class MainMenu extends Scene {
     super("MainMenu");
   }
 
+  init(data) {
+    this.productsAmount = data.productsAmount;
+  }
+
   create() {
     this.add.image(512, 384, "background");
 
@@ -22,7 +26,7 @@ export class MainMenu extends Scene {
       .setOrigin(0.5);
 
     // this.input.once("pointerdown", () => {
-    this.scene.start("Game");
+    this.scene.start("Game", { productsAmount: this.productsAmount });
     // });
   }
 }

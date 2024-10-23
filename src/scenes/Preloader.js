@@ -3,6 +3,7 @@ import { Scene } from "phaser";
 export class Preloader extends Scene {
   constructor() {
     super("Preloader");
+    this.productsAmount = 18;
   }
 
   init() {
@@ -23,6 +24,7 @@ export class Preloader extends Scene {
   }
 
   preload() {
+    // set base path
     this.load.setPath("assets");
 
     //  Load the assets for the game - Replace with your own assets
@@ -48,6 +50,11 @@ export class Preloader extends Scene {
     this.load.image("ski", "ski.png");
 
     this.load.json("mandalShape", "mandal.json");
+
+    // Products
+    for (let i = 1; i <= this.productsAmount; i++) {
+      this.load.image(`product${i}`, `product${i}.png`);
+    }
   }
 
   create() {
@@ -55,6 +62,6 @@ export class Preloader extends Scene {
     //  For example, you can define global animations here, so we can use them in other scenes.
 
     //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-    this.scene.start("MainMenu");
+    this.scene.start("MainMenu", { productsAmount: this.productsAmount });
   }
 }

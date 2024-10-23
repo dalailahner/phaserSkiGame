@@ -35,7 +35,10 @@ export class Game extends Scene {
     this.trees.setAngle(25);
     //   position
     this.bgElements = [this.sky, this.mountainsBack, this.mountainsFront, this.trees];
-    this.bgElementsYshift = [0, 50, 300, 0];
+    this.bgElementsYshift = {
+      elements: [this.mountainsBack, this.mountainsFront],
+      offsets: [50, 300],
+    };
     this.bgElements.forEach((element) => {
       element.setOrigin(0.5);
       element.setScale(1 / this.bgInputScale);
@@ -80,7 +83,7 @@ export class Game extends Scene {
     this.head = this.matter.add.sprite(mandalPos.x + 60, mandalPos.y - 180, "head", null, { shape: mandalShape.head, isStatic: mandalStatic });
     this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { shape: mandalShape.torso, isStatic: mandalStatic });
     this.cameras.main.startFollow(this.torso);
-    this.updateBgYshift();
+    this.updateBgYshift(this.bgElementsYshift);
     this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { shape: mandalShape.arm, isStatic: mandalStatic });
 
     const mandalSprites = [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm];
@@ -233,21 +236,22 @@ export class Game extends Scene {
     // Background
     //   counter zoom
     this.bgElements.forEach((element) => element.setScale(1 / this.bgInputScale / this.cameras.main.zoom));
-    //   parallax
+    //   parallax x shift
     const scrollDistance = this.cameras.main.scrollX - this.prevScrollX;
     this.mountainsBack.tilePositionX += scrollDistance * 0.01;
     this.mountainsFront.tilePositionX += scrollDistance * 0.025;
     this.trees.tilePositionX += scrollDistance * 0.05;
     this.prevScrollX = this.cameras.main.scrollX;
-    this.updateBgYshift();
+    //   parallax y shift
+    this.updateBgYshift(this.bgElementsYshift);
   }
 
   //------------------
   // Custom Functions
-  updateBgYshift() {
+  updateBgYshift(obj) {
     const Yshift = this.mapValue(this.torso.y, 0, this.bottomOfSlope, 1, 0);
-    for (let i = 0; i < this.bgElements.length; i++) {
-      this.bgElements[i].y = this.game.config.height * this.bgElements[i].originY + this.bgElementsYshift[i] * Yshift * this.bgElements[i].scale;
+    for (let i = 0; i < obj.elements.length; i++) {
+      obj.elements[i].y = this.game.config.height * obj.elements[i].originY + obj.offsets[i] * Yshift * obj.elements[i].scale;
     }
   }
 

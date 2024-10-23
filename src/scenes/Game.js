@@ -31,7 +31,7 @@ export class Game extends Scene {
     //   mountainsFront
     this.mountainsFront = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "mountainsFront");
     //   trees
-    this.trees = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale * 2, this.game.config.height * this.bgInputScale, "trees");
+    this.trees = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale * 2, this.game.config.height * this.bgInputScale * 2, "trees");
     this.trees.setAngle(25);
     //   position
     this.bgElements = [this.sky, this.mountainsBack, this.mountainsFront, this.trees];

@@ -82,14 +82,14 @@ export class Game extends Scene {
     this.ragdoll = false;
 
     //   sprites
-    this.ski = this.matter.add.sprite(mandalPos.x, mandalPos.y - 10, "ski", null, { shape: mandalShape.ski, isStatic: mandalStatic });
-    this.calfs = this.matter.add.sprite(mandalPos.x, mandalPos.y - 60, "calfs", null, { shape: mandalShape.calfs, isStatic: mandalStatic });
-    this.thighs = this.matter.add.sprite(mandalPos.x - 15, mandalPos.y - 105, "thighs", null, { shape: mandalShape.thighs, isStatic: mandalStatic });
-    this.head = this.matter.add.sprite(mandalPos.x + 60, mandalPos.y - 180, "head", null, { shape: mandalShape.head, isStatic: mandalStatic });
-    this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { shape: mandalShape.torso, isStatic: mandalStatic });
+    this.ski = this.matter.add.sprite(mandalPos.x, mandalPos.y - 10, "ski", null, { label: "mandal", shape: mandalShape.ski, isStatic: mandalStatic });
+    this.calfs = this.matter.add.sprite(mandalPos.x, mandalPos.y - 60, "calfs", null, { label: "mandal", shape: mandalShape.calfs, isStatic: mandalStatic });
+    this.thighs = this.matter.add.sprite(mandalPos.x - 15, mandalPos.y - 105, "thighs", null, { label: "mandal,lethal", shape: mandalShape.thighs, isStatic: mandalStatic });
+    this.head = this.matter.add.sprite(mandalPos.x + 60, mandalPos.y - 180, "head", null, { label: "mandal,lethal", shape: mandalShape.head, isStatic: mandalStatic });
+    this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { label: "mandal,lethal", shape: mandalShape.torso, isStatic: mandalStatic });
     this.cameras.main.startFollow(this.torso);
     this.updateBgYshift(this.bgElementsYshift);
-    this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { shape: mandalShape.arm, isStatic: mandalStatic });
+    this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { label: "mandal", shape: mandalShape.arm, isStatic: mandalStatic });
 
     const mandalSprites = [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm];
     mandalSprites.forEach((sprite) => sprite.setDepth(10));
@@ -119,16 +119,23 @@ export class Game extends Scene {
 
     //------------
     // Collisions
-    const mandalLethalBodyParts = [this.thighs.body, this.head.body, this.torso.body];
     this.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
+      // product
+      if (bodyA.parent.label.split(",").includes("mandal") && bodyB.label.split(",").includes("product")) {
+        this.collectProduct(bodyB);
+      }
+      if (bodyB.parent.label.split(",").includes("mandal") && bodyA.label.split(",").includes("product")) {
+        this.collectProduct(bodyA);
+      }
+
       // game over
-      if (mandalLethalBodyParts.includes(bodyA.parent) && bodyB.collisionFilter.group === -10) {
+      if (bodyA.parent.label.split(",").includes("lethal") && bodyB.label.split(",").includes("floor")) {
         this.time.addEvent({
           callback: this.gameOver(bodyA),
           callbackScope: this,
         });
       }
-      if (mandalLethalBodyParts.includes(bodyB.parent) && bodyA.collisionFilter.group === -10) {
+      if (bodyB.parent.label.split(",").includes("lethal") && bodyA.label.split(",").includes("floor")) {
         this.time.addEvent({
           callback: this.gameOver(bodyB),
           callbackScope: this,
@@ -210,6 +217,7 @@ export class Game extends Scene {
         this.spline.points.shift();
       }
       while (this.floorArr.length > 100) {
+        this.matter.world.remove(this.floorArr[0].body);
         this.floorArr[0].destroy();
         this.floorArr.shift();
       }
@@ -235,7 +243,7 @@ export class Game extends Scene {
       const floorPoint2 = new PhaserMath.Vector2(this.floorArr[this.floorArr.length - 1]);
       const spawnPoint = floorPoint1.add(floorPoint2).scale(0.5).add(floorPoint2.subtract(floorPoint1).normalizeLeftHand().scale(5));
 
-      const product = this.matter.add.sprite(spawnPoint.x, spawnPoint.y, `product${PhaserMath.Between(1, this.productsAmount)}`, null, { isSensor: true, isStatic: true });
+      const product = this.matter.add.sprite(spawnPoint.x, spawnPoint.y, `product${PhaserMath.Between(1, this.productsAmount)}`, null, { label: "product", isSensor: true, isStatic: true, shape: { type: "circle", radius: 125 } });
       product.setAngle(-5);
 
       // anim
@@ -310,7 +318,7 @@ export class Game extends Scene {
           floorObj.setDisplaySize(150, 150);
 
           // add physics body
-          floorObj.setRectangle(150, 130, { angle: rotation, chamfer: { radius: 50 }, collisionFilter: { group: -10 }, friction: 0.001, restitution: 0, isStatic: true });
+          floorObj.setRectangle(150, 130, { label: "floor", angle: rotation, chamfer: { radius: 50 }, collisionFilter: { group: -10 }, friction: 0.001, restitution: 0, isStatic: true });
           this.floorArr.push(floorObj);
         }
       }
@@ -330,6 +338,14 @@ export class Game extends Scene {
     }
   }
 
+  collectProduct(body) {
+    if (body.gameObject) {
+      this.tweens.killTweensOf(body.gameObject);
+      this.matter.world.remove(body);
+      body.gameObject.destroy();
+    }
+  }
+
   gameOver(bodyPart) {
     console.log(`game over, you hit your: ${bodyPart.parent.label}`);
     this.ragdoll = true;
@@ -337,6 +353,7 @@ export class Game extends Scene {
       spring.stiffness = 0.005;
     });
     setTimeout(() => {
+      this.tweens.killAll();
       this.scene.start("GameOver");
     }, 2500);
   }

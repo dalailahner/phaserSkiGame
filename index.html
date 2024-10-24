@@ -4,11 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/style.css" />
     <title>Phaser 3 Ski Game</title>
   </head>
 
   <body>
+    <!-- force font load: -->
+    <p style="position: absolute; left: -1000px; font-family: 'Open Sans'; visibility: hidden">.</p>
     <div id="app">
       <div id="game-container"></div>
     </div>

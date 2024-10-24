@@ -9,6 +9,7 @@ export class Game extends Scene {
     this.prevScrollX = 0;
     this.nextArticleSpawn = 4000;
     this.bottomOfSlope = 50000;
+    this.score = 0;
   }
 
   init(data) {
@@ -112,6 +113,19 @@ export class Game extends Scene {
     this.headSpring = this.matter.add.constraint(this.torso, this.head, 40, 1, { damping: 1, pointA: { x: 80, y: -60 }, pointB: { x: -8, y: 12 } });
 
     this.matter.composite.add(this.mandalBody, [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring]);
+
+    //----
+    // UI
+    this.uiCont = this.add.container(this.game.config.width / 2, this.game.config.height / 2);
+    this.uiCont.setScrollFactor(0);
+    //   score text
+    this.scoreText = this.add.text(300, -350, `Score: ${this.score}`, {
+      fontFamily: "'Open Sans', sans-serif",
+      fontSize: "32px",
+      fontStyle: "bold",
+      color: "#191919",
+    });
+    this.uiCont.add(this.scoreText);
 
     //----------
     // Controls
@@ -293,6 +307,10 @@ export class Game extends Scene {
     this.prevScrollX = this.cameras.main.scrollX;
     //   parallax y shift
     this.updateBgYshift(this.bgElementsYshift);
+
+    //----
+    // UI
+    this.uiCont.setScale(1 / this.cameras.main.zoom);
   }
 
   //------------------
@@ -343,6 +361,10 @@ export class Game extends Scene {
       this.tweens.killTweensOf(body.gameObject);
       this.matter.world.remove(body);
       body.gameObject.destroy();
+    }
+    if (!this.ragdoll) {
+      this.score += 1;
+      this.scoreText.setText(`Score: ${this.score}`);
     }
   }
 

@@ -177,11 +177,27 @@ export class Game extends Scene {
     });
 
     // Fixed Update Timer
-    this.time.addEvent({
+    this.fixedUpdateTimer = this.time.addEvent({
       delay: this.fixedTimeStep,
       callback: this.fixedUpdate,
       callbackScope: this,
       loop: true,
+    });
+
+    // pause and resume on lost focus
+    //   lost focus
+    this.game.events.on("hidden", () => {
+      this.matter.world.pause();
+      this.fixedUpdateTimer.paused = true;
+      this.timerEvent.paused = true;
+      this.scene.pause();
+    });
+    //   regain focus
+    this.game.events.on("visible", () => {
+      this.matter.world.resume();
+      this.fixedUpdateTimer.paused = false;
+      this.timerEvent.paused = false;
+      this.scene.resume();
     });
   }
 

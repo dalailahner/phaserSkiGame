@@ -10,6 +10,7 @@ export class Game extends Scene {
     this.nextArticleSpawn = 4000;
     this.bottomOfSlope = 50000;
     this.score = 0;
+    this.timerTime = 60;
   }
 
   init(data) {
@@ -125,11 +126,29 @@ export class Game extends Scene {
       fontStyle: "bold",
       color: "#191919",
     });
+    //   timer text
+    this.timerText = this.add.text(50, -350, `Time left: ${this.timerTime}`, {
+      fontFamily: "'Open Sans', sans-serif",
+      fontSize: "32px",
+      fontStyle: "bold",
+      color: "#191919",
+    });
+    //   add texts to UI container
     this.uiCont.add(this.scoreText);
+    this.uiCont.add(this.timerText);
 
     //----------
     // Controls
     this.keys = this.input.keyboard.addKeys("W,A,S,D,UP,LEFT,DOWN,RIGHT");
+
+    //-------
+    // Timer
+    this.timerEvent = this.time.addEvent({
+      delay: 1000,
+      callback: this.timerTick,
+      callbackScope: this,
+      loop: true,
+    });
 
     //------------
     // Collisions
@@ -365,6 +384,16 @@ export class Game extends Scene {
     if (!this.ragdoll) {
       this.score += 1;
       this.scoreText.setText(`Score: ${this.score}`);
+    }
+  }
+
+  timerTick() {
+    this.timerTime -= 1;
+    this.timerText.setText("Time left: " + this.timerTime);
+
+    if (this.timerTime <= 0) {
+      this.timerEvent.remove();
+      // TODO: Timer ended -> start end sequence
     }
   }
 

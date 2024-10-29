@@ -10,12 +10,12 @@ export class MainMenu extends Scene {
   }
 
   create() {
-    this.add.image(512, 384, "background");
+    // BG
+    this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
 
-    this.add.image(512, 300, "logo");
-
+    // Text
     this.add
-      .text(512, 460, "Main Menu", {
+      .text(this.game.config.width >> 1, 200, "Main Menu", {
         fontFamily: "Arial Black",
         fontSize: 38,
         color: "#ffffff",
@@ -25,8 +25,11 @@ export class MainMenu extends Scene {
       })
       .setOrigin(0.5);
 
-    // this.input.once("pointerdown", () => {
-    this.scene.start("Game", { productsAmount: this.productsAmount });
-    // });
+    // Start Button
+    const buttonStart = this.add.image(this.game.config.width >> 1, this.game.config.height * 0.66, "buttonStart").setScale(0.5);
+    buttonStart.setInteractive({ useHandCursor: true });
+    buttonStart.on("pointerdown", () => {
+      this.scene.start("Game", { productsAmount: this.productsAmount });
+    });
   }
 }

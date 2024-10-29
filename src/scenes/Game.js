@@ -70,6 +70,7 @@ export class Game extends Scene {
       this.game.config.height,
     ]);
     const allPoints = this.spline.getDistancePoints(100);
+    // TODO: put taferl there
     this.drawFloorFromPoints(allPoints, this.spline.points[this.spline.points.length - 1].x);
 
     //--------

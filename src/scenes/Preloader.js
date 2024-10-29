@@ -7,19 +7,28 @@ export class Preloader extends Scene {
   }
 
   init() {
-    //  We loaded this image in our Boot Scene, so we can display it here
-    this.add.image(512, 384, "background");
+    // We loaded this image in our Boot Scene, so we can display it here
+    this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
 
-    //  A simple progress bar. This is the outline of the bar.
-    this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0xffffff);
+    //---------------
+    // Progress Bar:
 
-    //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
-    const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0xffffff);
+    //   container:
+    this.progressBarCont = this.add.container(this.game.config.width / 2 - 481 / 2, this.game.config.height * 0.7);
 
-    //  Use the 'progress' event emitted by the LoaderPlugin to update the loading bar
+    //   BG
+    this.progressBarCont.add(this.add.rectangle(17, 39, 481, 51, 0x92cde8).setOrigin(0));
+
+    //   This is the progress bar itself. It will increase in size from the left based on the % of progress.
+    const progressBar = this.add.rectangle(17, 39, 4, 51, 0xffc83c).setOrigin(0);
+    this.progressBarCont.add(progressBar);
+
+    //   overlay
+    this.progressBarCont.add(this.add.image(0, 0, "progressBarOverlay").setOrigin(0).setScale(0.5));
+
+    //   progress event
     this.load.on("progress", (progress) => {
-      //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
-      bar.width = 4 + 460 * progress;
+      progressBar.width = 4 + 477 * progress;
     });
   }
 
@@ -27,8 +36,8 @@ export class Preloader extends Scene {
     // set base path
     this.load.setPath("assets");
 
-    //  Load the assets for the game - Replace with your own assets
-    this.load.image("logo", "logo.png");
+    // Main Menu
+    this.load.image("buttonStart", "buttonStart.png");
 
     // Background
     this.load.image("sky", "sky.jpg");
@@ -37,6 +46,7 @@ export class Preloader extends Scene {
     this.load.image("trees", "trees.png");
 
     // Floor
+    this.load.image("taferl", "taferl.png");
     this.load.image("floorSnow1", "floorSnow1.png");
     this.load.image("floorSnow2", "floorSnow2.png");
     this.load.image("floorSnow3", "floorSnow3.png");
@@ -60,7 +70,6 @@ export class Preloader extends Scene {
   create() {
     //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
     //  For example, you can define global animations here, so we can use them in other scenes.
-
     //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
     this.scene.start("MainMenu", { productsAmount: this.productsAmount });
   }

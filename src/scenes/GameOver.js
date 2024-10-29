@@ -11,7 +11,7 @@ export class GameOver extends Scene {
     this.add.image(512, 384, "background").setAlpha(0.5);
 
     this.add
-      .text(512, 384, "Game Over", {
+      .text(this.game.config.width >> 1, 384, "Game Over", {
         fontFamily: "Arial Black",
         fontSize: 64,
         color: "#ffffff",

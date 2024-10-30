@@ -27,9 +27,32 @@ export class MainMenu extends Scene {
       .setOrigin(0.5);
 
     // Start Button
-    const buttonStart = this.add.image(this.game.config.width >> 1, this.game.config.height * 0.66, "buttonStart").setScale(0.5);
-    buttonStart.setInteractive({ useHandCursor: true });
+    const buttonStart = this.add
+      .sprite(this.game.config.width >> 1, this.game.config.height * 0.66, "buttonStart", 0)
+      .setScale(0.5)
+      .setInteractive({ useHandCursor: true });
+    //   events
+    buttonStart.on("pointerover", () => {
+      buttonStart.setFrame(1);
+      this.tweens.add({
+        targets: buttonStart,
+        scale: 0.52,
+        duration: 150,
+        ease: "Expo.out",
+      });
+    });
+    buttonStart.on("pointerout", () => {
+      buttonStart.setFrame(0);
+      this.tweens.add({
+        targets: buttonStart,
+        scale: 0.5,
+        duration: 150,
+        ease: "Expo.out",
+      });
+    });
     buttonStart.on("pointerdown", () => {
+      this.tweens.killAll();
+      this.game.events.removeAllListeners();
       this.scene.start("Game", { productsAmount: this.productsAmount });
     });
   }

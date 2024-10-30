@@ -68,6 +68,9 @@ export class Preloader extends Scene {
     for (let i = 1; i <= this.productsAmount; i++) {
       this.load.image(`product${i}`, `product${i}.png`);
     }
+
+    // ikoHaus
+    this.load.svg("ikoHaus", "ikoHaus.svg", { width: 6000, height: 1200 });
   }
 
   create() {

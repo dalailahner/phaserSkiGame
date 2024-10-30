@@ -11,6 +11,7 @@ export class Game extends Scene {
     this.bottomOfSlope = 50000;
     this.score = 0;
     this.timerTime = 60;
+    this.runFinished = false;
   }
 
   init(data) {
@@ -226,7 +227,9 @@ export class Game extends Scene {
       }
       // DOWN
       if (this.keys.DOWN.isDown || this.keys.S.isDown) {
-        this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
+        if (!this.runFinished) {
+          this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
+        }
         this.kneeSpring.length = this.lerp(this.kneeSpring.length, 100, 0.25);
         this.buttSpring.length = this.lerp(this.buttSpring.length, 75, 0.25);
         this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
@@ -239,7 +242,9 @@ export class Game extends Scene {
       }
       // IDLE
       if (this.keys.UP.isUp && this.keys.DOWN.isUp && this.keys.W.isUp && this.keys.S.isUp) {
-        this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
+        if (!this.runFinished) {
+          this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
+        }
         this.kneeSpring.length = this.lerp(this.kneeSpring.length, 140, 0.25);
         this.buttSpring.length = this.lerp(this.buttSpring.length, 105, 0.25);
         this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
@@ -265,13 +270,15 @@ export class Game extends Scene {
       this.drawFloorFromPoints(points, this.spline.points[this.spline.points.length - 3].x);
 
       // remove old objects
-      while (this.spline.points.length > 20) {
-        this.spline.points.shift();
-      }
-      while (this.floorArr.length > 100) {
-        this.matter.world.remove(this.floorArr[0].body);
-        this.floorArr[0].destroy();
-        this.floorArr.shift();
+      if (!this.runFinished) {
+        while (this.spline.points.length > 20) {
+          this.spline.points.shift();
+        }
+        while (this.floorArr.length > 100) {
+          this.matter.world.remove(this.floorArr[0].body);
+          this.floorArr[0].destroy();
+          this.floorArr.shift();
+        }
       }
     }
 
@@ -286,6 +293,14 @@ export class Game extends Scene {
         x: torsoVelocity.x * scale,
         y: torsoVelocity.y * scale,
       });
+    }
+
+    //-----------------------
+    // Slow down on Finished
+    if (this.runFinished) {
+      if (this.torso.x > this.stopPoint) {
+        this.maxVelocity = this.lerp(this.maxVelocity, 0, 0.02);
+      }
     }
 
     //----------
@@ -326,12 +341,19 @@ export class Game extends Scene {
 
     //--------
     // Camera
-    //   zoom
-    const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, 0.33);
-    this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
-    //   offset
-    const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);
-    this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
+    if (!this.runFinished) {
+      //   zoom
+      const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, 0.33);
+      this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
+      //   offset
+      const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);
+      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
+    } else {
+      //   zoom
+      this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, 0.33, 0.01);
+      //   offset
+      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, 0, 0.01), this.lerp(this.cameras.main.followOffset.y, 400, 0.01));
+    }
 
     //------------
     // Background
@@ -446,7 +468,23 @@ export class Game extends Scene {
 
     if (this.timerTime <= 0) {
       this.timerEvent.remove();
-      // TODO: Timer ended -> start end sequence
+
+      // set run to finished
+      this.runFinished = true;
+
+      // draw building
+      this.ikoHaus = this.add.image(this.spline.points[this.spline.points.length - 1].x, this.spline.points[this.spline.points.length - 1].y + 50, "ikoHaus").setOrigin(0, 1);
+
+      // set stop point (is used in update function)
+      this.stopPoint = this.ikoHaus.getBottomCenter().x;
+
+      // draw floor
+      const oldLength = this.spline.getDistancePoints(100).length;
+      this.spline.points.push({ x: this.spline.points[this.spline.points.length - 1].x + this.ikoHaus.displayWidth, y: this.spline.points[this.spline.points.length - 1].y });
+      this.spline.updateArcLengths();
+      const allPoints = this.spline.getDistancePoints(100);
+      const points = allPoints.slice(oldLength - 6, -1);
+      this.drawFloorFromPoints(points, this.spline.points[this.spline.points.length - 1].x);
     }
   }
 

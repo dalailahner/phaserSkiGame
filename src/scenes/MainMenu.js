@@ -15,11 +15,12 @@ export class MainMenu extends Scene {
 
     // Text
     this.add
-      .text(this.game.config.width >> 1, 200, "Main Menu", {
-        fontFamily: "Arial Black",
+      .text(this.game.config.width >> 1, 75, "Main Menu", {
+        fontFamily: "'Open Sans', sans-serif",
         fontSize: 72,
+        fontStyle: "bold",
         color: "#ffffff",
-        stroke: "#000000",
+        stroke: "#006d9f",
         strokeThickness: 8,
         align: "center",
       })

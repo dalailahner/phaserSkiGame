@@ -57,6 +57,7 @@ export class Game extends Scene {
     // Floor
     this.floorArr = [];
     this.floorMin = 0;
+    //   create curve
     this.spline = new Curves.Spline([
       this.game.config.width * -1,
       this.game.config.height >> 1,
@@ -69,8 +70,11 @@ export class Game extends Scene {
       this.game.config.width * 1.5,
       this.game.config.height,
     ]);
+    //   taferl
+    const taferlPos = { x: this.spline.getPoint(0.9).x, y: this.spline.getPoint(0.9).y - 70 };
+    this.add.image(taferlPos.x, taferlPos.y, "taferl").setOrigin(0.5, 1).setScale(0.5);
+    //   draw floor
     const allPoints = this.spline.getDistancePoints(100);
-    // TODO: put taferl there
     this.drawFloorFromPoints(allPoints, this.spline.points[this.spline.points.length - 1].x);
 
     //--------

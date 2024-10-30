@@ -8,7 +8,7 @@ export class GameOver extends Scene {
   create() {
     this.cameras.main.setBackgroundColor(0xff0000);
 
-    this.add.image(512, 384, "background").setAlpha(0.5);
+    this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
 
     this.add
       .text(this.game.config.width >> 1, 384, "Game Over", {

@@ -17,7 +17,7 @@ export class MainMenu extends Scene {
     this.add
       .text(this.game.config.width >> 1, 200, "Main Menu", {
         fontFamily: "Arial Black",
-        fontSize: 38,
+        fontSize: 72,
         color: "#ffffff",
         stroke: "#000000",
         strokeThickness: 8,

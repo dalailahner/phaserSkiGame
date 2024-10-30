@@ -395,14 +395,48 @@ export class Game extends Scene {
   }
 
   collectProduct(productBody) {
-    if (productBody.gameObject) {
+    if (productBody.gameObject && !this.ragdoll) {
+      const textureName = productBody.gameObject?.texture.key;
+      const match = textureName?.match(/\d+/);
+      const productNumber = match ? Number(match[0]) : null;
+
+      // increase the points according to product
+      switch (productNumber) {
+        case 1:
+          this.score += 25;
+          break;
+
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+          this.score += 50;
+          break;
+
+        case 16:
+        case 17:
+        case 18:
+          this.score += 150;
+          break;
+
+        case 14:
+        case 15:
+          this.score += 200;
+          break;
+
+        default:
+          this.score += 100;
+          break;
+      }
+
+      // update score text
+      this.scoreText.setText(`Score: ${this.score}`);
+
+      // remove the product entirely
       this.tweens.killTweensOf(productBody.gameObject);
       this.matter.world.remove(productBody);
       productBody.gameObject.destroy();
-    }
-    if (!this.ragdoll) {
-      this.score += 1;
-      this.scoreText.setText(`Score: ${this.score}`);
     }
   }
 

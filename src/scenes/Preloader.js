@@ -37,7 +37,10 @@ export class Preloader extends Scene {
     this.load.setPath("assets");
 
     // Main Menu
-    this.load.image("buttonStart", "buttonStart.png");
+    this.load.spritesheet("buttonStart", "buttonStart.png", {
+      frameWidth: 984,
+      frameHeight: 506,
+    });
 
     // Background
     this.load.image("sky", "sky.jpg");

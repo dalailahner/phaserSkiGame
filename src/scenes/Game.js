@@ -167,15 +167,9 @@ export class Game extends Scene {
       }
 
       // game over
-      if (bodyA.parent.label.split(",").includes("lethal") && bodyB.label.split(",").includes("floor")) {
+      if ((bodyA.parent.label.split(",").includes("lethal") && bodyB.label.split(",").includes("floor")) || (bodyB.parent.label.split(",").includes("lethal") && bodyA.label.split(",").includes("floor"))) {
         this.time.addEvent({
-          callback: this.gameOver(bodyA),
-          callbackScope: this,
-        });
-      }
-      if (bodyB.parent.label.split(",").includes("lethal") && bodyA.label.split(",").includes("floor")) {
-        this.time.addEvent({
-          callback: this.gameOver(bodyB),
+          callback: this.gameOver(),
           callbackScope: this,
         });
       }
@@ -418,8 +412,7 @@ export class Game extends Scene {
     }
   }
 
-  gameOver(bodyPart) {
-    console.log(`game over, you hit your: ${bodyPart.parent.label}`);
+  gameOver() {
     this.ragdoll = true;
     [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring].forEach((spring) => {
       spring.stiffness = 0.005;

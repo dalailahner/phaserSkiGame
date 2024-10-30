@@ -4,7 +4,7 @@ export class Game extends Scene {
   constructor() {
     super("Game");
     this.fixedTimeStep = 1000 / 60;
-    this.fixedUpdateTimer = 0;
+    this.fixedUpdateTimer = undefined;
     this.bgInputScale = 2;
     this.prevScrollX = 0;
     this.nextArticleSpawn = 4000;
@@ -127,14 +127,14 @@ export class Game extends Scene {
     //   score text
     this.scoreText = this.add.text(300, -350, `Score: ${this.score}`, {
       fontFamily: "'Open Sans', sans-serif",
-      fontSize: "32px",
+      fontSize: 32,
       fontStyle: "bold",
       color: "#191919",
     });
     //   timer text
     this.timerText = this.add.text(50, -350, `Time left: ${this.timerTime}`, {
       fontFamily: "'Open Sans', sans-serif",
-      fontSize: "32px",
+      fontSize: 32,
       fontStyle: "bold",
       color: "#191919",
     });
@@ -168,19 +168,23 @@ export class Game extends Scene {
 
       // game over
       if ((bodyA.parent.label.split(",").includes("lethal") && bodyB.label.split(",").includes("floor")) || (bodyB.parent.label.split(",").includes("lethal") && bodyA.label.split(",").includes("floor"))) {
-        this.time.addEvent({
-          callback: this.gameOver(),
-          callbackScope: this,
-        });
+        if (!this.ragdoll) {
+          this.time.addEvent({
+            loop: false,
+            repeat: 0,
+            callback: this.gameOver(),
+            callbackScope: this,
+          });
+        }
       }
     });
 
     // Fixed Update Timer
     this.fixedUpdateTimer = this.time.addEvent({
       delay: this.fixedTimeStep,
+      loop: true,
       callback: this.fixedUpdate,
       callbackScope: this,
-      loop: true,
     });
 
     // pause and resume on lost focus
@@ -301,7 +305,7 @@ export class Game extends Scene {
         duration: 333,
         yoyo: true,
         loop: -1,
-        ease: "sine.inout",
+        ease: "Sine.inout",
       });
 
       // fx
@@ -313,7 +317,7 @@ export class Game extends Scene {
         duration: 500,
         yoyo: true,
         loop: -1,
-        ease: "sine.inout",
+        ease: "Sine.inout",
       });
       product.postFX.addShine(3, 0.333, 5);
 
@@ -390,11 +394,11 @@ export class Game extends Scene {
     }
   }
 
-  collectProduct(body) {
-    if (body.gameObject) {
-      this.tweens.killTweensOf(body.gameObject);
-      this.matter.world.remove(body);
-      body.gameObject.destroy();
+  collectProduct(productBody) {
+    if (productBody.gameObject) {
+      this.tweens.killTweensOf(productBody.gameObject);
+      this.matter.world.remove(productBody);
+      productBody.gameObject.destroy();
     }
     if (!this.ragdoll) {
       this.score += 1;
@@ -419,7 +423,8 @@ export class Game extends Scene {
     });
     setTimeout(() => {
       this.tweens.killAll();
-      this.scene.start("GameOver");
+      this.game.events.removeAllListeners();
+      this.scene.start("GameOver", { score: this.score });
     }, 2500);
   }
 

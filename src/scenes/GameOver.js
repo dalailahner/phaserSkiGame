@@ -40,7 +40,6 @@ export class GameOver extends Scene {
       .setOrigin(0.5);
 
     // count up the score
-    console.log("Creating tween");
     this.tweens.addCounter({
       from: 0,
       to: this.score,

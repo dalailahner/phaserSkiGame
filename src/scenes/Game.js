@@ -123,25 +123,24 @@ export class Game extends Scene {
 
     //----
     // UI
+    //   container
     this.uiCont = this.add.container(this.game.config.width / 2, this.game.config.height / 2);
     this.uiCont.setScrollFactor(0);
+    //   score sign
+    this.scoreSign = this.add.image(285, -325, "scoreSign").setOrigin(0, 0.5).setScale(0.5);
     //   score text
-    this.scoreText = this.add.text(300, -350, `Score: ${this.score}`, {
-      fontFamily: "'Open Sans', sans-serif",
-      fontSize: 32,
-      fontStyle: "bold",
-      color: "#191919",
-    });
-    //   timer text
-    this.timerText = this.add.text(50, -350, `Time left: ${this.timerTime}`, {
-      fontFamily: "'Open Sans', sans-serif",
-      fontSize: 32,
-      fontStyle: "bold",
-      color: "#191919",
-    });
-    //   add texts to UI container
+    this.scoreText = this.add
+      .text(383, -308, this.score, {
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: 48,
+        fontStyle: "bold",
+        color: "#422d19",
+        align: "center",
+      })
+      .setOrigin(0.5);
+    //   add elements to UI container
+    this.uiCont.add(this.scoreSign);
     this.uiCont.add(this.scoreText);
-    this.uiCont.add(this.timerText);
 
     //----------
     // Controls
@@ -453,7 +452,7 @@ export class Game extends Scene {
       }
 
       // update score text
-      this.scoreText.setText(`Score: ${this.score}`);
+      this.scoreText.setText(this.score);
 
       // remove the product entirely
       this.tweens.killTweensOf(productBody.gameObject);
@@ -464,7 +463,6 @@ export class Game extends Scene {
 
   timerTick() {
     this.timerTime -= 1;
-    this.timerText.setText("Time left: " + this.timerTime);
 
     if (this.timerTime <= 0) {
       this.timerEvent.remove();

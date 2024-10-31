@@ -64,6 +64,9 @@ export class Preloader extends Scene {
 
     this.load.json("mandalShape", "mandal.json");
 
+    // Score Sign
+    this.load.image("scoreSign", "scoreSign.png");
+
     // Products
     for (let i = 1; i <= this.productsAmount; i++) {
       this.load.image(`product${i}`, `product${i}.png`);

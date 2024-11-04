@@ -126,9 +126,10 @@ export class Game extends Scene {
     // UI
     //   container
     this.uiCont = this.add.container(this.game.config.width / 2, this.game.config.height / 2);
-    this.uiCont.setScrollFactor(0);
+    this.uiCont.setDepth(90).setScrollFactor(0);
     //   score sign
-    this.scoreSign = this.add.image(285, -325, "scoreSign").setOrigin(0, 0.5).setScale(0.5);
+    this.scoreSign = this.add.image(285, -325, "scoreSign").setOrigin(0, 0.5).setScale(0.5).setScrollFactor(0);
+    this.uiCont.add(this.scoreSign);
     //   score text
     this.scoreText = this.add
       .text(383, -308, this.score, {
@@ -138,14 +139,58 @@ export class Game extends Scene {
         color: "#422d19",
         align: "center",
       })
-      .setOrigin(0.5);
-    //   add elements to UI container
-    this.uiCont.add(this.scoreSign);
+      .setOrigin(0.5)
+      .setScrollFactor(0);
     this.uiCont.add(this.scoreText);
 
     //----------
     // Controls
+    //   keyboard
     this.keys = this.input.keyboard.addKeys("W,A,S,D,UP,LEFT,DOWN,RIGHT");
+    //   touch
+    const touchControlsPadding = { x: this.game.config.width * 0.025, y: this.game.config.height * 0.025 };
+    const touchControlsPos = [
+      {
+        x: touchControlsPadding.x - this.game.config.width / 2,
+        y: this.game.config.height - 125 - touchControlsPadding.y * 2 - this.game.config.height / 2,
+      },
+      {
+        x: touchControlsPadding.x - this.game.config.width / 2,
+        y: this.game.config.height - touchControlsPadding.y - this.game.config.height / 2,
+      },
+      {
+        x: this.game.config.width - 125 - touchControlsPadding.x * 2 - this.game.config.width / 2,
+        y: this.game.config.height - touchControlsPadding.y - this.game.config.height / 2,
+      },
+      {
+        x: this.game.config.width - touchControlsPadding.x - this.game.config.width / 2,
+        y: this.game.config.height - touchControlsPadding.y - this.game.config.height / 2,
+      },
+    ];
+    this.touchControls = [];
+    this.touchControls.push(this.add.sprite(touchControlsPos[0].x, touchControlsPos[0].y, "touchControlsLeft", 0).setOrigin(0, 1));
+    this.touchControls.push(this.add.sprite(touchControlsPos[1].x, touchControlsPos[1].y, "touchControlsLeft", 2).setOrigin(0, 1));
+    this.touchControls.push(this.add.sprite(touchControlsPos[2].x, touchControlsPos[2].y, "touchControlsRight", 0).setOrigin(1, 1));
+    this.touchControls.push(this.add.sprite(touchControlsPos[3].x, touchControlsPos[3].y, "touchControlsRight", 2).setOrigin(1, 1));
+    this.touchControls.forEach((btn) => {
+      btn.setScale(0.5).setInteractive({ useHandCursor: true }).setScrollFactor(0);
+      this.uiCont.add(btn);
+      btn.on("pointerover", () => {
+        btn.setFrame(btn.frame.name + 1);
+        btn.isDown = true;
+      });
+      btn.on("pointerout", () => {
+        btn.setFrame(btn.frame.name - 1);
+        btn.isDown = false;
+      });
+    });
+    //   disable touch button if keyboard is available
+    console.log("keyboard.isActive() = ", this.input.keyboard.isActive());
+    if (!navigator.userAgent.includes("Mobi") || !window.matchMedia("(pointer: coarse)").matches) {
+      this.touchControls.forEach((btn) => {
+        btn.destroy();
+      });
+    }
 
     //-------
     // Timer
@@ -208,25 +253,29 @@ export class Game extends Scene {
   fixedUpdate() {
     //----------
     // Controls
+    const UP = this.keys.UP.isDown || this.keys.W.isDow || this.touchControls[0].isDown;
+    const DOWN = this.keys.DOWN.isDown || this.keys.S.isDown || this.touchControls[1].isDown;
+    const LEFT = this.keys.LEFT.isDown || this.keys.A.isDown || this.touchControls[2].isDown;
+    const RIGHT = this.keys.RIGHT.isDown || this.keys.D.isDown || this.touchControls[3].isDown;
     if (!this.ragdoll) {
       // LEFT
-      if (this.keys.LEFT.isDown || this.keys.A.isDown) {
-        if (this.keys.DOWN.isDown || this.keys.S.isDown) {
+      if (LEFT) {
+        if (DOWN) {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.025);
         } else {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() - 0.1);
         }
       }
       // RIGHT
-      if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
-        if (this.keys.DOWN.isDown || this.keys.S.isDown) {
+      if (RIGHT) {
+        if (DOWN) {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.025);
         } else {
           this.torso.setAngularVelocity(this.torso.getAngularVelocity() + 0.1);
         }
       }
       // DOWN
-      if (this.keys.DOWN.isDown || this.keys.S.isDown) {
+      if (DOWN) {
         if (!this.runFinished) {
           this.maxVelocity = this.lerp(this.maxVelocity, 35, 0.01);
         }
@@ -235,13 +284,13 @@ export class Game extends Scene {
         this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
       }
       // UP
-      if (this.keys.UP.isDown || this.keys.W.isDown) {
+      if (UP) {
         this.kneeSpring.length = this.lerp(this.kneeSpring.length, 150, 0.25);
         this.buttSpring.length = this.lerp(this.buttSpring.length, 160, 0.25);
         this.absSpring.length = this.lerp(this.absSpring.length, 110, 0.25);
       }
       // IDLE
-      if (this.keys.UP.isUp && this.keys.DOWN.isUp && this.keys.W.isUp && this.keys.S.isUp) {
+      if (!UP && !DOWN) {
         if (!this.runFinished) {
           this.maxVelocity = this.lerp(this.maxVelocity, 25, 0.01);
         }

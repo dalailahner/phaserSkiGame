@@ -12,20 +12,15 @@ export class Preloader extends Scene {
 
     //---------------
     // Progress Bar:
-
-    //   container:
+    //   container
     this.progressBarCont = this.add.container(this.game.config.width / 2 - 481 / 2, this.game.config.height * 0.7);
-
     //   BG
     this.progressBarCont.add(this.add.rectangle(17, 39, 481, 51, 0x92cde8).setOrigin(0));
-
     //   This is the progress bar itself. It will increase in size from the left based on the % of progress.
     const progressBar = this.add.rectangle(17, 39, 4, 51, 0xffc83c).setOrigin(0);
     this.progressBarCont.add(progressBar);
-
     //   overlay
     this.progressBarCont.add(this.add.image(0, 0, "progressBarOverlay").setOrigin(0).setScale(0.5));
-
     //   progress event
     this.load.on("progress", (progress) => {
       progressBar.width = 4 + 477 * progress;
@@ -66,6 +61,16 @@ export class Preloader extends Scene {
 
     // Score Sign
     this.load.image("scoreSign", "scoreSign.png");
+
+    // Touch Controls
+    this.load.spritesheet("touchControlsLeft", "touchControlsLeft.png", {
+      frameWidth: 400,
+      frameHeight: 250,
+    });
+    this.load.spritesheet("touchControlsRight", "touchControlsRight.png", {
+      frameWidth: 250,
+      frameHeight: 400,
+    });
 
     // Products
     for (let i = 1; i <= this.productsAmount; i++) {

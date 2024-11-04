@@ -86,6 +86,7 @@ export class Game extends Scene {
     // TODO: delete mandalStatic when finished:
     const mandalStatic = false;
     const stiffness = 0.35;
+    this.mandalSpeed = 0;
     this.maxVelocity = 25;
     this.ragdoll = false;
 
@@ -249,6 +250,22 @@ export class Game extends Scene {
         this.absSpring.length = this.lerp(this.absSpring.length, 60, 0.25);
       }
     }
+
+    //--------
+    // Camera
+    if (!this.runFinished) {
+      //   zoom
+      const mappedZoomValue = this.mapValue(this.mandalSpeed, 0, this.maxVelocity, 1, 0.33);
+      this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
+      //   offset
+      const mappedOffsetValue = this.mapValue(this.mandalSpeed, 0, this.maxVelocity, 0, 1);
+      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
+    } else {
+      //   zoom
+      this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, 0.33, 0.005);
+      //   offset
+      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, 0, 0.005), this.lerp(this.cameras.main.followOffset.y, 400, 0.005));
+    }
   }
 
   update() {
@@ -283,14 +300,13 @@ export class Game extends Scene {
 
     //-------------------
     // Cap Body Velocity
-    const torsoVelocity = this.torso.body.velocity;
-    const mandalSpeed = Math.sqrt(torsoVelocity.x * torsoVelocity.x + torsoVelocity.y * torsoVelocity.y);
+    this.mandalSpeed = Math.sqrt(this.torso.body.velocity.x * this.torso.body.velocity.x + this.torso.body.velocity.y * this.torso.body.velocity.y);
 
-    if (mandalSpeed > this.maxVelocity) {
-      const scale = this.maxVelocity / mandalSpeed;
+    if (this.mandalSpeed > this.maxVelocity) {
+      const scale = this.maxVelocity / this.mandalSpeed;
       this.matter.body.setVelocity(this.torso.body, {
-        x: torsoVelocity.x * scale,
-        y: torsoVelocity.y * scale,
+        x: this.torso.body.velocity.x * scale,
+        y: this.torso.body.velocity.y * scale,
       });
     }
 
@@ -336,22 +352,6 @@ export class Game extends Scene {
       product.postFX.addShine(3, 0.333, 5);
 
       this.nextArticleSpawn += 4000;
-    }
-
-    //--------
-    // Camera
-    if (!this.runFinished) {
-      //   zoom
-      const mappedZoomValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 1, 0.33);
-      this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, mappedZoomValue, 0.01);
-      //   offset
-      const mappedOffsetValue = this.mapValue(mandalSpeed, 0, this.maxVelocity, 0, 1);
-      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, -750 * mappedOffsetValue, 0.01), this.lerp(this.cameras.main.followOffset.y, -333 * mappedOffsetValue, 0.01));
-    } else {
-      //   zoom
-      this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, 0.33, 0.01);
-      //   offset
-      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, 0, 0.01), this.lerp(this.cameras.main.followOffset.y, 400, 0.01));
     }
 
     //------------

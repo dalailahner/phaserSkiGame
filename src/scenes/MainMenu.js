@@ -26,6 +26,24 @@ export class MainMenu extends Scene {
       })
       .setOrigin(0.5);
 
+    // ORIENTATION CHECK
+    this.overlay = this.add.graphics();
+    this.overlay.setDepth(90);
+    this.overlay.fillStyle(0x000000, 0.8);
+    this.overlay.fillRect(0, 0, this.game.config.width, this.game.config.height);
+    this.orientationText = this.add
+      .text(this.game.config.width >> 1, this.game.config.height >> 1, "Please set your \n phone orientation \n to landscape", {
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: 72,
+        fontStyle: "bold",
+        color: "#f5f5f5",
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(91);
+    this.checkOriention();
+    this.scale.on("orientationchange", this.checkOriention, this);
+
     // Start Button
     const buttonStart = this.add
       .sprite(this.game.config.width >> 1, this.game.config.height * 0.66, "buttonStart", 0)
@@ -55,5 +73,15 @@ export class MainMenu extends Scene {
       this.game.events.removeAllListeners();
       this.scene.start("Game", { productsAmount: this.productsAmount });
     });
+  }
+
+  checkOriention() {
+    if (this.scale.isPortrait) {
+      this.overlay.setVisible(true);
+      this.orientationText.setVisible(true);
+      return;
+    }
+    this.overlay.setVisible(false);
+    this.orientationText.setVisible(false);
   }
 }

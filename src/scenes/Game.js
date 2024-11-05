@@ -253,7 +253,7 @@ export class Game extends Scene {
   fixedUpdate() {
     //----------
     // Controls
-    const UP = this.keys.UP.isDown || this.keys.W.isDow || this.touchControls[0].isDown;
+    const UP = this.keys.UP.isDown || this.keys.W.isDown || this.touchControls[0].isDown;
     const DOWN = this.keys.DOWN.isDown || this.keys.S.isDown || this.touchControls[1].isDown;
     const LEFT = this.keys.LEFT.isDown || this.keys.A.isDown || this.touchControls[2].isDown;
     const RIGHT = this.keys.RIGHT.isDown || this.keys.D.isDown || this.touchControls[3].isDown;

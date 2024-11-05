@@ -185,7 +185,6 @@ export class Game extends Scene {
       });
     });
     //   disable touch button if keyboard is available
-    console.log("keyboard.isActive() = ", this.input.keyboard.isActive());
     if (!navigator.userAgent.includes("Mobi") || !window.matchMedia("(pointer: coarse)").matches) {
       this.touchControls.forEach((btn) => {
         btn.destroy();

@@ -32,9 +32,25 @@ export class Preloader extends Scene {
     this.load.setPath("assets");
 
     // Main Menu
+    this.load.spritesheet("buttonFullscreen", "buttonFullscreen.png", {
+      frameWidth: 270,
+      frameHeight: 260,
+    });
     this.load.spritesheet("buttonStart", "buttonStart.png", {
       frameWidth: 984,
       frameHeight: 506,
+    });
+    this.load.spritesheet("buttonControls", "buttonControls.png", {
+      frameWidth: 984,
+      frameHeight: 506,
+    });
+    this.load.spritesheet("howToPlay", "howToPlay.png", {
+      frameWidth: 2048,
+      frameHeight: 986,
+    });
+    this.load.spritesheet("buttonClose", "buttonClose.png", {
+      frameWidth: 270,
+      frameHeight: 260,
     });
 
     // Background
@@ -79,6 +95,12 @@ export class Preloader extends Scene {
 
     // ikoHaus
     this.load.svg("ikoHaus", "ikoHaus.svg", { width: 6000, height: 1200 });
+
+    // Game Over
+    this.load.spritesheet("buttonRestart", "buttonRestart.png", {
+      frameWidth: 984,
+      frameHeight: 506,
+    });
   }
 
   create() {

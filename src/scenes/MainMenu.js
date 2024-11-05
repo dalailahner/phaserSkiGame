@@ -14,8 +14,8 @@ export class MainMenu extends Scene {
     this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
 
     // Text
-    this.add
-      .text(this.game.config.width >> 1, 75, "Main Menu", {
+    const headline = this.add
+      .text(this.game.config.width >> 1, 75, "iko Gewinnspiel", {
         fontFamily: "'Open Sans', sans-serif",
         fontSize: 72,
         fontStyle: "bold",
@@ -32,7 +32,7 @@ export class MainMenu extends Scene {
     this.overlay.fillStyle(0x000000, 0.8);
     this.overlay.fillRect(0, 0, this.game.config.width, this.game.config.height);
     this.orientationText = this.add
-      .text(this.game.config.width >> 1, this.game.config.height >> 1, "Please set your \n phone orientation \n to landscape", {
+      .text(this.game.config.width >> 1, this.game.config.height >> 1, "Drehe das Gerät\nfür ein besseres\nSpielerlebnis.", {
         fontFamily: "'Open Sans', sans-serif",
         fontSize: 72,
         fontStyle: "bold",
@@ -44,30 +44,86 @@ export class MainMenu extends Scene {
     this.checkOriention();
     this.scale.on("orientationchange", this.checkOriention, this);
 
-    // Start Button
-    const buttonStart = this.add
-      .sprite(this.game.config.width >> 1, this.game.config.height * 0.66, "buttonStart", 0)
+    // Buttons & UI
+    const buttonFullscreen = this.add
+      .sprite(this.game.config.width - 100, 80, "buttonFullscreen", 0)
       .setScale(0.5)
       .setInteractive({ useHandCursor: true });
-    //   events
-    buttonStart.on("pointerover", () => {
-      buttonStart.setFrame(1);
-      this.tweens.add({
-        targets: buttonStart,
-        scale: 0.52,
-        duration: 150,
-        ease: "Expo.out",
+
+    const buttonStart = this.add
+      .sprite(this.game.config.width >> 1, this.game.config.height * 0.8, "buttonStart", 0)
+      .setScale(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    const buttonControls = this.add
+      .sprite(this.game.config.width >> 1, this.game.config.height * 0.4, "buttonControls", 0)
+      .setScale(0.5)
+      .setInteractive({ useHandCursor: true });
+    const howToPlay = this.add
+      .sprite(this.game.config.width >> 1, this.game.config.height, "howToPlay", 0)
+      .setOrigin(0.5, 1)
+      .setScale(0.5)
+      .setVisible(false);
+    if (navigator.userAgent.includes("Mobi") || window.matchMedia("(pointer: coarse)").matches) {
+      howToPlay.setFrame(1);
+    } else {
+      howToPlay.setFrame(0);
+    }
+    const buttonCloseControls = this.add
+      .sprite(this.game.config.width - 100, this.game.config.height * 0.4, "buttonClose", 0)
+      .setScale(0.5)
+      .setInteractive({ useHandCursor: true })
+      .setVisible(false);
+
+    //   hover
+    const hoverBtns = [buttonFullscreen, buttonStart, buttonControls, buttonCloseControls];
+    hoverBtns.forEach((btn) => {
+      btn.on("pointerover", () => {
+        btn.setFrame(1);
+        this.tweens.add({
+          targets: btn,
+          scale: 0.52,
+          duration: 150,
+          ease: "Expo.out",
+        });
+      });
+      btn.on("pointerout", () => {
+        btn.setFrame(0);
+        this.tweens.add({
+          targets: btn,
+          scale: 0.5,
+          duration: 150,
+          ease: "Expo.out",
+        });
       });
     });
-    buttonStart.on("pointerout", () => {
-      buttonStart.setFrame(0);
-      this.tweens.add({
-        targets: buttonStart,
-        scale: 0.5,
-        duration: 150,
-        ease: "Expo.out",
-      });
+
+    // Events
+    //   toggle fullscreen
+    buttonFullscreen.on("pointerdown", () => {
+      this.scale.toggleFullscreen();
     });
+    //   show controls
+    buttonControls.on("pointerdown", () => {
+      [buttonStart, buttonControls].forEach((btn) => {
+        btn.setVisible(false);
+      });
+      [howToPlay, buttonCloseControls].forEach((btn) => {
+        btn.setVisible(true);
+      });
+      headline.setText("Steuerung");
+    });
+    //   hide controls
+    buttonCloseControls.on("pointerdown", () => {
+      [howToPlay, buttonCloseControls].forEach((btn) => {
+        btn.setVisible(false);
+      });
+      [buttonStart, buttonControls].forEach((btn) => {
+        btn.setVisible(true);
+      });
+      headline.setText("iko Gewinnspiel");
+    });
+    //   start game
     buttonStart.on("pointerdown", () => {
       this.tweens.killAll();
       this.game.events.removeAllListeners();

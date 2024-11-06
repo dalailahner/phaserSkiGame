@@ -532,6 +532,22 @@ export class Game extends Scene {
       const points = allPoints.slice(oldLength - 6, -1);
       this.drawFloorFromPoints(points, this.spline.points[this.spline.points.length - 1].x);
 
+      // headline
+      const finishHeadline = this.add
+        .text(0, ((this.game.config.height >> 1) + 50) * -1, "Geschafft!", {
+          fontFamily: "'Open Sans', sans-serif",
+          fontSize: 72,
+          fontStyle: "bold",
+          color: "#ffffff",
+          stroke: "#006d9f",
+          strokeThickness: 8,
+          align: "center",
+        })
+        .setOrigin(0.5)
+        .setScrollFactor(0);
+
+      this.uiCont.add(finishHeadline);
+
       // show btn to enter the raffle
       const buttonEnterRaffle = this.add
         .sprite(0, this.game.config.height >> 1, "buttonEnterRaffle", 0)
@@ -543,6 +559,14 @@ export class Game extends Scene {
       this.uiCont.add(buttonEnterRaffle);
 
       //   anims & events
+      this.tweens.add({
+        targets: finishHeadline,
+        y: ((this.game.config.height >> 1) - 75) * -1,
+        delay: 3000,
+        duration: 1000,
+        ease: "Sine.inOut",
+      });
+
       this.tweens.add({
         targets: buttonEnterRaffle,
         y: (this.game.config.height >> 1) - (buttonEnterRaffle.displayHeight >> 1) - this.game.config.height * 0.025,

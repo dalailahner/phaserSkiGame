@@ -7,6 +7,10 @@ export class MainMenu extends Scene {
 
   init(data) {
     this.productsAmount = data.productsAmount;
+    this.isTouchDevice = false;
+    window.addEventListener("touchstart", () => {
+      this.isTouchDevice = true;
+    });
   }
 
   create() {
@@ -64,11 +68,6 @@ export class MainMenu extends Scene {
       .setOrigin(0.5, 0)
       .setScale(0.5)
       .setVisible(false);
-    if (navigator.userAgent.includes("Mobi") || window.matchMedia("(pointer: coarse)").matches) {
-      howToPlay.setFrame(1);
-    } else {
-      howToPlay.setFrame(0);
-    }
     const buttonCloseControls = this.add
       .sprite(this.game.config.width + 100, this.game.config.height * 0.4, "buttonClose", 0)
       .setScale(0.5)
@@ -105,12 +104,17 @@ export class MainMenu extends Scene {
     });
     //   show controls
     buttonControls.on("pointerdown", () => {
+      setTimeout(() => {
+        howToPlay.setFrame(this.isTouchDevice ? 1 : 0);
+      }, 1);
+
       [buttonStart, buttonControls].forEach((btn) => {
         btn.setVisible(false);
       });
       [howToPlay, buttonCloseControls].forEach((btn) => {
         btn.setVisible(true);
       });
+
       this.tweens.add({
         targets: howToPlay,
         y: this.game.config.height - howToPlay.displayHeight,
@@ -142,7 +146,9 @@ export class MainMenu extends Scene {
     buttonStart.on("pointerdown", () => {
       this.tweens.killAll();
       this.game.events.removeAllListeners();
-      this.scene.start("Game", { productsAmount: this.productsAmount });
+      setTimeout(() => {
+        this.scene.start("Game", { productsAmount: this.productsAmount, isTouchDevice: this.isTouchDevice });
+      }, 1);
     });
   }
 

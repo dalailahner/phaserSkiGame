@@ -312,7 +312,7 @@ export class Game extends Scene {
       //   zoom
       this.cameras.main.zoom = this.lerp(this.cameras.main.zoom, 0.33, 0.005);
       //   offset
-      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, 0, 0.005), this.lerp(this.cameras.main.followOffset.y, 400, 0.005));
+      this.cameras.main.setFollowOffset(this.lerp(this.cameras.main.followOffset.x, 0, 0.005), this.lerp(this.cameras.main.followOffset.y, 400, 0.01));
     }
   }
 
@@ -531,19 +531,61 @@ export class Game extends Scene {
       const allPoints = this.spline.getDistancePoints(100);
       const points = allPoints.slice(oldLength - 6, -1);
       this.drawFloorFromPoints(points, this.spline.points[this.spline.points.length - 1].x);
+
+      // show btn to enter the raffle
+      const buttonEnterRaffle = this.add
+        .sprite(0, this.game.config.height >> 1, "buttonEnterRaffle", 0)
+        .setScale(0.5)
+        .setInteractive({ useHandCursor: true })
+        .setScrollFactor(0);
+      buttonEnterRaffle.setPosition(0, (this.game.config.height >> 1) + buttonEnterRaffle.displayHeight);
+
+      this.uiCont.add(buttonEnterRaffle);
+
+      //   anims & events
+      this.tweens.add({
+        targets: buttonEnterRaffle,
+        y: (this.game.config.height >> 1) - (buttonEnterRaffle.displayHeight >> 1) - this.game.config.height * 0.025,
+        delay: 3000,
+        duration: 1000,
+        ease: "Sine.inOut",
+      });
+      buttonEnterRaffle.on("pointerover", () => {
+        buttonEnterRaffle.setFrame(1);
+        this.tweens.add({
+          targets: buttonEnterRaffle,
+          scale: 0.52,
+          duration: 150,
+          ease: "Expo.out",
+        });
+      });
+      buttonEnterRaffle.on("pointerout", () => {
+        buttonEnterRaffle.setFrame(0);
+        this.tweens.add({
+          targets: buttonEnterRaffle,
+          scale: 0.5,
+          duration: 150,
+          ease: "Expo.out",
+        });
+      });
+      buttonEnterRaffle.on("pointerdown", () => {
+        window.top.open("https://forms.sn.at/iko-gewinnspiel/?score=test");
+      });
     }
   }
 
   gameOver() {
-    this.ragdoll = true;
-    [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring].forEach((spring) => {
-      spring.stiffness = 0.005;
-    });
-    setTimeout(() => {
-      this.tweens.killAll();
-      this.game.events.removeAllListeners();
-      this.scene.start("GameOver", { score: this.score });
-    }, 2500);
+    if (!this.runFinished) {
+      this.ragdoll = true;
+      [this.kneeSpring, this.buttSpring, this.absSpring, this.armSpring, this.headSpring].forEach((spring) => {
+        spring.stiffness = 0.005;
+      });
+      setTimeout(() => {
+        this.tweens.killAll();
+        this.game.events.removeAllListeners();
+        this.scene.start("GameOver", { score: this.score });
+      }, 2500);
+    }
   }
 
   mapValue(value, fromMin, fromMax, toMin, toMax) {

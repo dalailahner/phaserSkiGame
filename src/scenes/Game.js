@@ -188,7 +188,9 @@ export class Game extends Scene {
     //   disable touch button if keyboard is available
     if (!this.isTouchDevice) {
       this.touchControls.forEach((btn) => {
-        btn.destroy();
+        if (btn.active) {
+          btn.destroy();
+        }
       });
     }
 
@@ -518,6 +520,15 @@ export class Game extends Scene {
 
       // set run to finished
       this.runFinished = true;
+
+      // remove touch btns if active
+      setTimeout(() => {
+        this.touchControls.forEach((btn) => {
+          if (btn.active) {
+            btn.destroy();
+          }
+        });
+      }, 1000);
 
       // draw building
       this.ikoHaus1 = this.add.image(this.spline.points[this.spline.points.length - 1].x, this.spline.points[this.spline.points.length - 1].y + 50, "ikoHaus1").setOrigin(0, 1);

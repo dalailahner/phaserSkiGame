@@ -3,10 +3,11 @@ import { Scene } from "phaser";
 export class Preloader extends Scene {
   constructor() {
     super("Preloader");
-    this.productsAmount = 18;
   }
 
   init() {
+    this.productsAmount = 18;
+
     // We loaded this image in our Boot Scene, so we can display it here
     this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
 

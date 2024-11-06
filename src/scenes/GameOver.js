@@ -6,6 +6,7 @@ export class GameOver extends Scene {
   }
 
   init(data) {
+    this.productsAmount = data.productsAmount;
     this.score = data.score;
     this.gameOverTextConf = {
       fontFamily: "'Open Sans', sans-serif",

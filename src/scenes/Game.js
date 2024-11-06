@@ -3,6 +3,12 @@ import { Scene, Curves, Math as PhaserMath } from "phaser";
 export class Game extends Scene {
   constructor() {
     super("Game");
+  }
+
+  init(data) {
+    this.productsAmount = data.productsAmount;
+    this.isTouchDevice = data.isTouchDevice;
+
     this.fixedTimeStep = 1000 / 60;
     this.fixedUpdateTimer = undefined;
     this.bgInputScale = 2;
@@ -12,11 +18,6 @@ export class Game extends Scene {
     this.score = 0;
     this.timerTime = 60;
     this.runFinished = false;
-  }
-
-  init(data) {
-    this.productsAmount = data.productsAmount;
-    this.isTouchDevice = data.isTouchDevice;
   }
 
   create() {
@@ -632,7 +633,7 @@ export class Game extends Scene {
       setTimeout(() => {
         this.tweens.killAll();
         this.game.events.removeAllListeners();
-        this.scene.start("GameOver", { score: this.score });
+        this.scene.start("GameOver", { productsAmount: this.productsAmount, score: this.score });
       }, 2500);
     }
   }

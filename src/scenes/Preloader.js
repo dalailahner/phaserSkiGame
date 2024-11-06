@@ -94,7 +94,9 @@ export class Preloader extends Scene {
     }
 
     // ikoHaus
-    this.load.svg("ikoHaus", "ikoHaus.svg", { width: 6000, height: 1200 });
+    this.load.image("ikoHaus1", "ikoHaus1.png");
+    this.load.image("ikoHaus2", "ikoHaus2.png");
+    this.load.image("ikoHaus3", "ikoHaus3.png");
 
     // Game Over
     this.load.spritesheet("buttonRestart", "buttonRestart.png", {

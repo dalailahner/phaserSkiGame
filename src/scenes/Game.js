@@ -16,6 +16,7 @@ export class Game extends Scene {
 
   init(data) {
     this.productsAmount = data.productsAmount;
+    this.isTouchDevice = data.isTouchDevice;
   }
 
   create() {
@@ -185,7 +186,7 @@ export class Game extends Scene {
       });
     });
     //   disable touch button if keyboard is available
-    if (!navigator.userAgent.includes("Mobi") || !window.matchMedia("(pointer: coarse)").matches) {
+    if (!this.isTouchDevice) {
       this.touchControls.forEach((btn) => {
         btn.destroy();
       });

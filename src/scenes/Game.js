@@ -519,14 +519,16 @@ export class Game extends Scene {
       this.runFinished = true;
 
       // draw building
-      this.ikoHaus = this.add.image(this.spline.points[this.spline.points.length - 1].x, this.spline.points[this.spline.points.length - 1].y + 50, "ikoHaus").setOrigin(0, 1);
+      this.ikoHaus1 = this.add.image(this.spline.points[this.spline.points.length - 1].x, this.spline.points[this.spline.points.length - 1].y + 50, "ikoHaus1").setOrigin(0, 1);
+      this.ikoHaus2 = this.add.image(this.ikoHaus1.getBottomRight().x, this.ikoHaus1.getBottomRight().y, "ikoHaus2").setOrigin(0, 1);
+      this.ikoHaus3 = this.add.image(this.ikoHaus2.getBottomRight().x, this.ikoHaus2.getBottomRight().y, "ikoHaus3").setOrigin(0, 1);
 
       // set stop point (is used in update function)
-      this.stopPoint = this.ikoHaus.getBottomCenter().x;
+      this.stopPoint = this.ikoHaus2.getBottomCenter().x;
 
       // draw floor
       const oldLength = this.spline.getDistancePoints(100).length;
-      this.spline.points.push({ x: this.spline.points[this.spline.points.length - 1].x + this.ikoHaus.displayWidth, y: this.spline.points[this.spline.points.length - 1].y });
+      this.spline.points.push({ x: this.spline.points[this.spline.points.length - 1].x + this.ikoHaus1.displayWidth * 3, y: this.spline.points[this.spline.points.length - 1].y });
       this.spline.updateArcLengths();
       const allPoints = this.spline.getDistancePoints(100);
       const points = allPoints.slice(oldLength - 6, -1);
@@ -558,6 +560,9 @@ export class Game extends Scene {
 
       this.uiCont.add(buttonEnterRaffle);
 
+      //   FX
+      const buttonEnterRaffleGlow = buttonEnterRaffle.preFX.addGlow(0xf2c668, 4, 2);
+
       //   anims & events
       this.tweens.add({
         targets: finishHeadline,
@@ -569,10 +574,17 @@ export class Game extends Scene {
 
       this.tweens.add({
         targets: buttonEnterRaffle,
-        y: (this.game.config.height >> 1) - (buttonEnterRaffle.displayHeight >> 1) - this.game.config.height * 0.025,
+        y: (this.game.config.height >> 1) - (buttonEnterRaffle.displayHeight >> 1) - this.game.config.height * 0.05,
         delay: 3000,
         duration: 1000,
         ease: "Sine.inOut",
+      });
+      this.tweens.add({
+        targets: buttonEnterRaffleGlow,
+        outerStrength: 32,
+        yoyo: true,
+        repeat: -1,
+        duration: 800,
       });
       buttonEnterRaffle.on("pointerover", () => {
         buttonEnterRaffle.setFrame(1);

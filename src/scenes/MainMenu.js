@@ -61,7 +61,7 @@ export class MainMenu extends Scene {
       .setInteractive({ useHandCursor: true });
     const howToPlay = this.add
       .sprite(this.game.config.width >> 1, this.game.config.height, "howToPlay", 0)
-      .setOrigin(0.5, 1)
+      .setOrigin(0.5, 0)
       .setScale(0.5)
       .setVisible(false);
     if (navigator.userAgent.includes("Mobi") || window.matchMedia("(pointer: coarse)").matches) {
@@ -70,7 +70,7 @@ export class MainMenu extends Scene {
       howToPlay.setFrame(0);
     }
     const buttonCloseControls = this.add
-      .sprite(this.game.config.width - 100, this.game.config.height * 0.4, "buttonClose", 0)
+      .sprite(this.game.config.width + 100, this.game.config.height * 0.4, "buttonClose", 0)
       .setScale(0.5)
       .setInteractive({ useHandCursor: true })
       .setVisible(false);
@@ -111,6 +111,19 @@ export class MainMenu extends Scene {
       [howToPlay, buttonCloseControls].forEach((btn) => {
         btn.setVisible(true);
       });
+      this.tweens.add({
+        targets: howToPlay,
+        y: this.game.config.height - howToPlay.displayHeight,
+        duration: 800,
+        ease: "Sine.inOut",
+      });
+      this.tweens.add({
+        targets: buttonCloseControls,
+        x: this.game.config.width - 100,
+        delay: 250,
+        duration: 800,
+        ease: "Sine.inOut",
+      });
       headline.setText("Steuerung");
     });
     //   hide controls
@@ -121,6 +134,8 @@ export class MainMenu extends Scene {
       [buttonStart, buttonControls].forEach((btn) => {
         btn.setVisible(true);
       });
+      howToPlay.setPosition(this.game.config.width >> 1, this.game.config.height);
+      buttonCloseControls.setPosition(this.game.config.width + 100, this.game.config.height * 0.4);
       headline.setText("iko Gewinnspiel");
     });
     //   start game

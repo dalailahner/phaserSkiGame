@@ -574,6 +574,7 @@ export class Game extends Scene {
 
       //   FX
       const buttonEnterRaffleGlow = buttonEnterRaffle.preFX.addGlow(0xf2c668, 4, 2);
+      buttonEnterRaffle.preFX.setPadding(32);
 
       //   anims & events
       this.tweens.add({

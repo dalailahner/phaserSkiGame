@@ -5,6 +5,7 @@
   "version": "0.0.0",
   "author": "dalailahner",
   "license": "GLWTS",
+  "type": "module",
   "keywords": [
     "Phaser3",
     "game",
@@ -16,10 +17,13 @@
     "build": "vite build --config vite/config.prod.mjs"
   },
   "devDependencies": {
+    "browserslist": "^4.24.2",
+    "lightningcss": "^1.28.1",
     "terser": "^5.36.0",
     "vite": "^5.4.10"
   },
   "dependencies": {
+    "noicss.reset": "^1.3.1",
     "phaser": "^3.86.0"
   }
 }

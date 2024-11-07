@@ -9,7 +9,7 @@ const config = {
   type: Phaser.AUTO,
   width: 1024,
   height: 768,
-  parent: "game-container",
+  parent: "gameCont",
   backgroundColor: "#028af8",
   input: {
     activePointers: 4,
@@ -22,7 +22,7 @@ const config = {
     default: "matter",
     matter: {
       gravity: { y: 0.98 },
-      debug: true,
+      debug: false,
     },
   },
   scene: [Boot, Preloader, MainMenu, Game, GameOver],

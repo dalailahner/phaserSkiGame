@@ -6,6 +6,8 @@ export class Preloader extends Scene {
   }
 
   init() {
+    screen.orientation.addEventListener("change", () => this.game.scale.refresh());
+
     this.productsAmount = 18;
 
     // We loaded this image in our Boot Scene, so we can display it here
@@ -30,7 +32,7 @@ export class Preloader extends Scene {
 
   preload() {
     // set base path
-    this.load.setPath("assets");
+    this.load.setPath("img");
 
     // Main Menu
     this.load.spritesheet("buttonFullscreen", "buttonFullscreen.png", {
@@ -74,7 +76,7 @@ export class Preloader extends Scene {
     this.load.image("calfs", "calfs.png");
     this.load.image("ski", "ski.png");
 
-    this.load.json("mandalShape", "mandal.json");
+    this.load.json("mandalShape", "../mandal.json");
 
     // Score Sign
     this.load.image("scoreSign", "scoreSign.png");

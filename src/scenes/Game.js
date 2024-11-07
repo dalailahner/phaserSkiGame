@@ -9,6 +9,8 @@ export class Game extends Scene {
     this.productsAmount = data.productsAmount;
     this.isTouchDevice = data.isTouchDevice;
 
+    screen.orientation.addEventListener("change", () => this.game.scale.refresh());
+
     this.fixedTimeStep = 1000 / 60;
     this.fixedUpdateTimer = undefined;
     this.bgInputScale = 2;
@@ -85,22 +87,20 @@ export class Game extends Scene {
     const mandalPos = { x: 200, y: 250 };
     const mandalShape = this.cache.json.get("mandalShape");
     this.mandalBody = this.matter.composite.create();
-    // TODO: delete mandalStatic when finished:
-    const mandalStatic = false;
     const stiffness = 0.35;
     this.mandalSpeed = 0;
     this.maxVelocity = 25;
     this.ragdoll = false;
 
     //   sprites
-    this.ski = this.matter.add.sprite(mandalPos.x, mandalPos.y - 10, "ski", null, { label: "mandal", shape: mandalShape.ski, isStatic: mandalStatic });
-    this.calfs = this.matter.add.sprite(mandalPos.x, mandalPos.y - 60, "calfs", null, { label: "mandal", shape: mandalShape.calfs, isStatic: mandalStatic });
-    this.thighs = this.matter.add.sprite(mandalPos.x - 15, mandalPos.y - 105, "thighs", null, { label: "mandal,lethal", shape: mandalShape.thighs, isStatic: mandalStatic });
-    this.head = this.matter.add.sprite(mandalPos.x + 60, mandalPos.y - 180, "head", null, { label: "mandal,lethal", shape: mandalShape.head, isStatic: mandalStatic });
-    this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { label: "mandal,lethal", shape: mandalShape.torso, isStatic: mandalStatic });
+    this.ski = this.matter.add.sprite(mandalPos.x, mandalPos.y - 10, "ski", null, { label: "mandal", shape: mandalShape.ski });
+    this.calfs = this.matter.add.sprite(mandalPos.x, mandalPos.y - 60, "calfs", null, { label: "mandal", shape: mandalShape.calfs });
+    this.thighs = this.matter.add.sprite(mandalPos.x - 15, mandalPos.y - 105, "thighs", null, { label: "mandal,lethal", shape: mandalShape.thighs });
+    this.head = this.matter.add.sprite(mandalPos.x + 60, mandalPos.y - 180, "head", null, { label: "mandal,lethal", shape: mandalShape.head });
+    this.torso = this.matter.add.sprite(mandalPos.x - 10, mandalPos.y - 145, "torso", null, { label: "mandal,lethal", shape: mandalShape.torso });
     this.cameras.main.startFollow(this.torso);
     this.updateBgYshift(this.bgElementsYshift);
-    this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { label: "mandal", shape: mandalShape.arm, isStatic: mandalStatic });
+    this.arm = this.matter.add.sprite(mandalPos.x + 5, mandalPos.y - 135, "arm", null, { label: "mandal", shape: mandalShape.arm });
 
     const mandalSprites = [this.ski, this.calfs, this.thighs, this.head, this.torso, this.arm];
     mandalSprites.forEach((sprite) => sprite.setDepth(10));

@@ -8,6 +8,9 @@ export class GameOver extends Scene {
   init(data) {
     this.productsAmount = data.productsAmount;
     this.score = data.score;
+
+    screen.orientation.addEventListener("change", () => this.game.scale.refresh());
+
     this.gameOverTextConf = {
       fontFamily: "'Open Sans', sans-serif",
       fontSize: 72,

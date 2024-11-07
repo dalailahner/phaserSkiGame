@@ -11,6 +11,7 @@ export class MainMenu extends Scene {
     window.addEventListener("touchstart", () => {
       this.isTouchDevice = true;
     });
+    screen.orientation.addEventListener("change", () => this.game.scale.refresh());
   }
 
   create() {

@@ -7,16 +7,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="src/style.css" />
+    <script type="module" src="src/main.js"></script>
     <title>Phaser 3 Ski Game</title>
   </head>
 
   <body>
-    <!-- force font load: -->
-    <p style="position: absolute; left: -1000px; font-family: 'Open Sans'; visibility: hidden">.</p>
-    <div id="app">
-      <div id="game-container"></div>
-    </div>
-    <script type="module" src="src/main.js"></script>
+    <section class="hero">
+      <h1 class="headline">20 Jahre iko Salzburg</h1>
+      <h2 class="subline">Jetzt mitspielen und tolle Preise gewinnen!</h2>
+      <a href="#gameCont" class="btn">zum Spiel</a>
+    </section>
+    <section class="tutorial">
+      <div class="textHeadlineCont">
+        <div class="textHeadlineBg"></div>
+        <h3 class="textHeadline">Das gibt es zu gewinnen:</h3>
+      </div>
+      <p class="text">Knacke den Highscore und gewinne einen Blizzard Anomaly 84R Ski inkl. TPC 10 Demo Bindung gewinnen!</p>
+      <p class="text">Unter allen weiteren Teilnehmern werden 20x Gutscheine im Wert von 20€ verlost!</p>
+      <div class="textHeadlineCont">
+        <div class="textHeadlineBg"></div>
+        <h3 class="textHeadline">How to play:</h3>
+      </div>
+      <p class="text">Mach es heil den Berg runter und sammle so viele Produkte wie möglich.</p>
+    </section>
+    <section class="game">
+      <div id="gameCont"></div>
+    </section>
+    <section class="footer">
+      <p>&copy; 2024 Salzburger Nachrichten</p>
+    </section>
   </body>
 </html>

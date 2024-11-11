@@ -37,14 +37,19 @@ export class Game extends Scene {
     // Background
     //   sky
     this.sky = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "sky");
+    this.sky.setDepth(1);
     //   mountainsBack
     this.mountainsBack = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "mountainsBack");
-    this.mountainsBack.setAlpha(0.5);
+    this.mountainsBack.setAlpha(0.5).setDepth(2);
     //   mountainsFront
     this.mountainsFront = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale, this.game.config.height * this.bgInputScale, "mountainsFront");
+    this.mountainsFront.setDepth(3);
+    //   plane
+    this.planeCont = this.add.container(this.game.config.width / 2, this.game.config.height / 2);
+    this.planeCont.setDepth(4).setScrollFactor(0);
     //   trees
     this.trees = this.add.tileSprite(this.game.config.width / 2, this.game.config.height / 2, this.game.config.width * this.bgInputScale * 2, this.game.config.height * this.bgInputScale * 2, "trees");
-    this.trees.setAngle(25);
+    this.trees.setAngle(25).setDepth(5);
     //   position
     this.bgElements = [this.sky, this.mountainsBack, this.mountainsFront, this.trees];
     this.bgElementsYshift = {
@@ -54,8 +59,10 @@ export class Game extends Scene {
     this.bgElements.forEach((element) => {
       element.setOrigin(0.5);
       element.setScale(1 / this.bgInputScale);
-      element.tilePositionY = 1; // <- fix top border bleeding
       element.setScrollFactor(0);
+      if (typeof element.tilePositionY === "number") {
+        element.tilePositionY = 1; // <- fix top border bleeding
+      }
     });
 
     //-------
@@ -144,6 +151,18 @@ export class Game extends Scene {
       .setOrigin(0.5)
       .setScrollFactor(0);
     this.uiCont.add(this.scoreText);
+
+    //   plane
+    this.anims.create({
+      key: "idle",
+      frames: "plane",
+      frameRate: 12,
+      repeat: -1,
+    });
+    this.plane = this.add.sprite(this.game.config.width >> 1, this.game.config.height * 0.3 * -1, "plane");
+    this.plane.setOrigin(0, 0.5).setScale(0.5).setDepth(4).setScrollFactor(0);
+    this.plane.play("idle");
+    this.planeCont.add(this.plane);
 
     //----------
     // Controls
@@ -254,6 +273,10 @@ export class Game extends Scene {
   }
 
   fixedUpdate() {
+    //-------
+    // Plane
+    this.plane.x -= 0.5;
+
     //----------
     // Controls
     const UP = this.keys.UP.isDown || this.keys.W.isDown || this.touchControls[0].isDown;
@@ -414,6 +437,7 @@ export class Game extends Scene {
     const scrollDistance = this.cameras.main.scrollX - this.prevScrollX;
     this.mountainsBack.tilePositionX += scrollDistance * 0.01;
     this.mountainsFront.tilePositionX += scrollDistance * 0.025;
+    this.planeCont.setScale(1 / this.cameras.main.zoom);
     this.trees.tilePositionX += scrollDistance * 0.05;
     this.prevScrollX = this.cameras.main.scrollX;
     //   parallax y shift

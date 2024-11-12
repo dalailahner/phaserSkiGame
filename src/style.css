@@ -12,6 +12,7 @@
     &::selection,
     &::target-text {
       color: #f5f5f5;
+      text-shadow: none;
     }
   }
 
@@ -47,7 +48,7 @@
   }
 
   .hero {
-    padding: 10lvh 1rem 0;
+    padding: max(6rem, 5lvh) 1rem 0;
     min-height: 100svh;
     position: relative;
     justify-content: center;
@@ -78,12 +79,13 @@
     & .headline {
       position: relative;
       color: var(--accentColor);
-      font-size: 2rem;
+      font-size: 1.75rem;
       font-weight: 700;
       text-align: center;
+      text-wrap: balance;
       line-height: 1.2;
       @media screen and (min-width: 768px) {
-        font-size: 3rem;
+        font-size: 2.5rem;
       }
       &::before {
         content: url("/img/20JahreIkoLogo.svg");
@@ -97,17 +99,22 @@
       }
     }
     & .subline {
-      font-size: 1.5rem;
+      font-size: 1.33rem;
       font-weight: 600;
       line-height: 1.2;
+      @media screen and (min-width: 768px) {
+        font-size: 1.66rem;
+      }
     }
     & .text {
       width: 100%;
-      max-width: 800px;
+      max-width: 600px;
       font-size: 1rem;
       text-align: left;
+      text-wrap: pretty;
       text-shadow: 0 0 3px #fff, 0 0 1rem #fff, 0 0 2rem #fff;
       & b {
+        color: var(--accentColor);
         font-weight: 700;
       }
     }

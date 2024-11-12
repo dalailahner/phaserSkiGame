@@ -16,7 +16,7 @@ export class GameOver extends Scene {
       fontSize: 72,
       fontStyle: "bold",
       color: "#ffffff",
-      stroke: "#006d9f",
+      stroke: "#014694",
       strokeThickness: 8,
       align: "center",
     };

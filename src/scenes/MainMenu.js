@@ -32,7 +32,7 @@ export class MainMenu extends Scene {
         fontSize: 60,
         fontStyle: "bold",
         color: "#ffffff",
-        stroke: "#006d9f",
+        stroke: "#014694",
         strokeThickness: 8,
         align: "center",
       })
@@ -40,25 +40,27 @@ export class MainMenu extends Scene {
 
     // SUBLINE
     this.add
-      .text(
-        this.game.config.width >> 1,
-        this.game.config.height * 0.45,
-        [
-          "Schnell fahren, Punkte sammeln, gewinnen!",
-          "Sammle so viele iko-Punkte wie möglich. Je schneller du fährst, desto mehr Punkte kannst du holen. Nur wer es sicher ins Ziel schafft und gleichzeitig die meisten Punkte sammelt, gewinnt den Hauptpreis: nagelneue Ski!",
-          "Schnelligkeit, Geschick und Mut bringen dich ans Ziel.",
-        ],
-        {
-          fontFamily: "'Open Sans', sans-serif",
-          fontSize: 28,
-          fontStyle: "bold",
-          color: "#ffffff",
-          stroke: "#006d9f",
-          strokeThickness: 6,
-          align: "left",
-          wordWrap: { width: this.game.config.width * 0.8, useAdvancedWrap: true },
-        }
-      )
+      .text(110, this.game.config.height * 0.35, "Schnell fahren, Punkte sammeln, gewinnen!", {
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: 36,
+        fontStyle: "bold",
+        color: "#ffffff",
+        stroke: "#014694",
+        strokeThickness: 7,
+        align: "left",
+      })
+      .setOrigin(0, 0.5);
+    this.add
+      .text(this.game.config.width >> 1, this.game.config.height * 0.5, "Tipp: Je schneller du fährst, desto mehr Punkte kannst du holen. Nur wer sicher ins Ziel kommt und gleichzeitig die meisten Punkte sammelt, kann gewinnen!", {
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: 28,
+        fontStyle: "bold italic",
+        color: "#ffffff",
+        stroke: "#014694",
+        strokeThickness: 6,
+        align: "left",
+        wordWrap: { width: this.game.config.width * 0.8, useAdvancedWrap: true },
+      })
       .setOrigin(0.5);
 
     // ORIENTATION CHECK

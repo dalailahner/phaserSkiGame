@@ -10,8 +10,13 @@ export class Preloader extends Scene {
 
     this.productsAmount = 18;
 
-    // We loaded this image in our Boot Scene, so we can display it here
+    // Background (loaded in boot)
     this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
+    // ikoLogo (loaded in boot)
+    this.add
+      .image(this.game.config.width >> 1, this.game.config.height * 0.15, "ikoLogo")
+      .setOrigin(0.5)
+      .setScale(0.5);
 
     //---------------
     // Progress Bar:
@@ -22,7 +27,7 @@ export class Preloader extends Scene {
     //   This is the progress bar itself. It will increase in size from the left based on the % of progress.
     const progressBar = this.add.rectangle(17, 39, 4, 51, 0xffc83c).setOrigin(0);
     this.progressBarCont.add(progressBar);
-    //   overlay
+    //   overlay (loaded in boot)
     this.progressBarCont.add(this.add.image(0, 0, "progressBarOverlay").setOrigin(0).setScale(0.5));
     //   progress event
     this.load.on("progress", (progress) => {
@@ -40,12 +45,12 @@ export class Preloader extends Scene {
       frameHeight: 260,
     });
     this.load.spritesheet("buttonStart", "buttonStart.png", {
-      frameWidth: 984,
-      frameHeight: 506,
+      frameWidth: 650,
+      frameHeight: 334,
     });
     this.load.spritesheet("buttonControls", "buttonControls.png", {
-      frameWidth: 984,
-      frameHeight: 506,
+      frameWidth: 650,
+      frameHeight: 334,
     });
     this.load.spritesheet("howToPlay", "howToPlay.png", {
       frameWidth: 2048,

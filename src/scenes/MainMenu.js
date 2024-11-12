@@ -18,17 +18,47 @@ export class MainMenu extends Scene {
     // BG
     this.add.image(0, 0, "menuBG").setOrigin(0).setScale(0.5);
 
-    // Text
+    // HEADLINE
+    //   Logo
+    this.add
+      .image(this.game.config.width * 0.2, this.game.config.height * 0.1, "ikoLogo")
+      .setOrigin(0.5)
+      .setScale(0.5);
+    //   Text
     const headline = this.add
-      .text(this.game.config.width >> 1, 75, "iko Gewinnspiel", {
+      // leave the space, idk why but it's rendering weird without
+      .text(this.game.config.width * 0.55, 75, " Jubiläumsrennen", {
         fontFamily: "'Open Sans', sans-serif",
-        fontSize: 72,
+        fontSize: 60,
         fontStyle: "bold",
         color: "#ffffff",
         stroke: "#006d9f",
         strokeThickness: 8,
         align: "center",
       })
+      .setOrigin(0.5);
+
+    // SUBLINE
+    this.add
+      .text(
+        this.game.config.width >> 1,
+        this.game.config.height * 0.45,
+        [
+          "Schnell fahren, Punkte sammeln, gewinnen!",
+          "Sammle so viele iko-Punkte wie möglich. Je schneller du fährst, desto mehr Punkte kannst du holen. Nur wer es sicher ins Ziel schafft und gleichzeitig die meisten Punkte sammelt, gewinnt den Hauptpreis: nagelneue Ski!",
+          "Schnelligkeit, Geschick und Mut bringen dich ans Ziel.",
+        ],
+        {
+          fontFamily: "'Open Sans', sans-serif",
+          fontSize: 28,
+          fontStyle: "bold",
+          color: "#ffffff",
+          stroke: "#006d9f",
+          strokeThickness: 6,
+          align: "left",
+          wordWrap: { width: this.game.config.width * 0.8, useAdvancedWrap: true },
+        }
+      )
       .setOrigin(0.5);
 
     // ORIENTATION CHECK
@@ -49,19 +79,19 @@ export class MainMenu extends Scene {
     this.checkOriention();
     this.scale.on("orientationchange", this.checkOriention, this);
 
-    // Buttons & UI
+    // BUTTONS & UI
     const buttonFullscreen = this.add
       .sprite(this.game.config.width - 100, 80, "buttonFullscreen", 0)
       .setScale(0.5)
       .setInteractive({ useHandCursor: true });
 
     const buttonStart = this.add
-      .sprite(this.game.config.width >> 1, this.game.config.height * 0.8, "buttonStart", 0)
+      .sprite(this.game.config.width * 0.72, this.game.config.height * 0.8, "buttonStart", 0)
       .setScale(0.5)
       .setInteractive({ useHandCursor: true });
 
     const buttonControls = this.add
-      .sprite(this.game.config.width >> 1, this.game.config.height * 0.4, "buttonControls", 0)
+      .sprite(this.game.config.width * 0.28, this.game.config.height * 0.8, "buttonControls", 0)
       .setScale(0.5)
       .setInteractive({ useHandCursor: true });
     const howToPlay = this.add
@@ -98,7 +128,7 @@ export class MainMenu extends Scene {
       });
     });
 
-    // Events
+    // EVENTS
     //   toggle fullscreen
     buttonFullscreen.on("pointerdown", () => {
       this.scale.toggleFullscreen();

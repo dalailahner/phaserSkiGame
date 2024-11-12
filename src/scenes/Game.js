@@ -84,7 +84,7 @@ export class Game extends Scene {
     ]);
     //   taferl
     const taferlPos = { x: this.spline.getPoint(0.9).x, y: this.spline.getPoint(0.9).y - 70 };
-    this.add.image(taferlPos.x, taferlPos.y, "taferl").setOrigin(0.5, 1).setScale(0.5);
+    this.add.image(taferlPos.x, taferlPos.y, "taferl").setOrigin(0.5, 1).setScale(0.5).setDepth(6);
     //   draw floor
     const allPoints = this.spline.getDistancePoints(100);
     this.drawFloorFromPoints(allPoints, this.spline.points[this.spline.points.length - 1].x);
@@ -400,7 +400,7 @@ export class Game extends Scene {
       const floorPoint2 = new PhaserMath.Vector2(this.floorArr[this.floorArr.length - 1]);
       const spawnPoint = floorPoint1.add(floorPoint2).scale(0.5).add(floorPoint2.subtract(floorPoint1).normalizeLeftHand().scale(5));
 
-      const product = this.matter.add.sprite(spawnPoint.x, spawnPoint.y, `product${PhaserMath.Between(1, this.productsAmount)}`, null, { label: "product", isSensor: true, isStatic: true, shape: { type: "circle", radius: 125 } });
+      const product = this.matter.add.sprite(spawnPoint.x, spawnPoint.y, `product${PhaserMath.Between(1, this.productsAmount)}`, null, { label: "product", isSensor: true, isStatic: true, shape: { type: "circle", radius: 125 } }).setDepth(8);
       product.setAngle(-5);
 
       // anim
@@ -556,9 +556,12 @@ export class Game extends Scene {
       }, 1000);
 
       // draw building
-      this.ikoHaus1 = this.add.image(this.spline.points[this.spline.points.length - 1].x, this.spline.points[this.spline.points.length - 1].y + 50, "ikoHaus1").setOrigin(0, 1);
-      this.ikoHaus2 = this.add.image(this.ikoHaus1.getBottomRight().x, this.ikoHaus1.getBottomRight().y, "ikoHaus2").setOrigin(0, 1);
-      this.ikoHaus3 = this.add.image(this.ikoHaus2.getBottomRight().x, this.ikoHaus2.getBottomRight().y, "ikoHaus3").setOrigin(0, 1);
+      this.ikoHaus1 = this.add
+        .image(this.spline.points[this.spline.points.length - 1].x, this.spline.points[this.spline.points.length - 1].y + 50, "ikoHaus1")
+        .setOrigin(0, 1)
+        .setDepth(7);
+      this.ikoHaus2 = this.add.image(this.ikoHaus1.getBottomRight().x, this.ikoHaus1.getBottomRight().y, "ikoHaus2").setOrigin(0, 1).setDepth(7);
+      this.ikoHaus3 = this.add.image(this.ikoHaus2.getBottomRight().x, this.ikoHaus2.getBottomRight().y, "ikoHaus3").setOrigin(0, 1).setDepth(7);
 
       // set stop point (is used in update function)
       this.stopPoint = this.ikoHaus2.getBottomCenter().x;

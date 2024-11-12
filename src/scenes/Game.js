@@ -594,7 +594,6 @@ export class Game extends Scene {
       // show btn to enter the raffle
       const buttonEnterRaffle = this.add
         .sprite(0, this.game.config.height >> 1, "buttonEnterRaffle", 0)
-        .setScale(0.5)
         .setInteractive({ useHandCursor: true })
         .setScrollFactor(0);
       buttonEnterRaffle.setPosition(0, (this.game.config.height >> 1) + buttonEnterRaffle.displayHeight);
@@ -632,7 +631,7 @@ export class Game extends Scene {
         buttonEnterRaffle.setFrame(1);
         this.tweens.add({
           targets: buttonEnterRaffle,
-          scale: 0.52,
+          scale: 1.1,
           duration: 150,
           ease: "Expo.out",
         });
@@ -641,13 +640,16 @@ export class Game extends Scene {
         buttonEnterRaffle.setFrame(0);
         this.tweens.add({
           targets: buttonEnterRaffle,
-          scale: 0.5,
+          scale: 1,
           duration: 150,
           ease: "Expo.out",
         });
       });
       buttonEnterRaffle.on("pointerdown", () => {
         const obfuscatedScore = CryptoJS.AES.encrypt(`${this.score}`, "Vqh8avxksB").toString();
+        if (this.scale.isFullscreen) {
+          this.scale.stopFullscreen();
+        }
         window.top.open(`https://forms.sn.at/iko-gewinnspiel/?score=${encodeURIComponent(obfuscatedScore)}`);
       });
     }

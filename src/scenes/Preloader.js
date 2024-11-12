@@ -118,8 +118,8 @@ export class Preloader extends Scene {
 
     // Enter Raffle
     this.load.spritesheet("buttonEnterRaffle", "buttonEnterRaffle.png", {
-      frameWidth: 984,
-      frameHeight: 600,
+      frameWidth: 325,
+      frameHeight: 198,
     });
   }
 

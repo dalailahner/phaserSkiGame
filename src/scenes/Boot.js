@@ -14,6 +14,7 @@ export class Boot extends Scene {
     this.load.setPath("img");
 
     this.load.image("menuBG", "menuBG.png");
+    this.load.image("ikoLogo", "ikoLogo.png");
     this.load.image("progressBarOverlay", "progressBarOverlay.png");
   }
 

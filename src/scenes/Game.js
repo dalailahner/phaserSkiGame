@@ -1,4 +1,5 @@
 import { Scene, Curves, Math as PhaserMath } from "phaser";
+import CryptoJS from "crypto-js";
 
 export class Game extends Scene {
   constructor() {
@@ -646,7 +647,8 @@ export class Game extends Scene {
         });
       });
       buttonEnterRaffle.on("pointerdown", () => {
-        window.top.open("https://forms.sn.at/iko-gewinnspiel/?score=test");
+        const obfuscatedScore = CryptoJS.AES.encrypt(`${this.score}`, "Vqh8avxksB").toString();
+        window.top.open(`https://forms.sn.at/iko-gewinnspiel/?score=${encodeURIComponent(obfuscatedScore)}`);
       });
     }
   }

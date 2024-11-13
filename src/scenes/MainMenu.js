@@ -39,7 +39,7 @@ export class MainMenu extends Scene {
       .setOrigin(0.5);
 
     // SUBLINE
-    this.add
+    const subline1 = this.add
       .text(110, this.game.config.height * 0.35, "Schnell fahren, Punkte sammeln, gewinnen!", {
         fontFamily: "'Open Sans', sans-serif",
         fontSize: 36,
@@ -50,7 +50,7 @@ export class MainMenu extends Scene {
         align: "left",
       })
       .setOrigin(0, 0.5);
-    this.add
+    const subline2 = this.add
       .text(this.game.config.width >> 1, this.game.config.height * 0.5, "Tipp: Je schneller du fährst, desto mehr Punkte kannst du holen. Nur wer sicher ins Ziel kommt und gleichzeitig die meisten Punkte sammelt, kann gewinnen!", {
         fontFamily: "'Open Sans', sans-serif",
         fontSize: 28,
@@ -99,7 +99,6 @@ export class MainMenu extends Scene {
     const howToPlay = this.add
       .sprite(this.game.config.width >> 1, this.game.config.height, "howToPlay", 0)
       .setOrigin(0.5, 0)
-      .setScale(0.5)
       .setVisible(false);
     const buttonCloseControls = this.add
       .sprite(this.game.config.width + 100, this.game.config.height * 0.4, "buttonClose", 0)
@@ -141,7 +140,7 @@ export class MainMenu extends Scene {
         howToPlay.setFrame(this.isTouchDevice ? 1 : 0);
       }, 1);
 
-      [buttonStart, buttonControls].forEach((btn) => {
+      [subline1, subline2, buttonStart, buttonControls].forEach((btn) => {
         btn.setVisible(false);
       });
       [howToPlay, buttonCloseControls].forEach((btn) => {
@@ -168,7 +167,7 @@ export class MainMenu extends Scene {
       [howToPlay, buttonCloseControls].forEach((btn) => {
         btn.setVisible(false);
       });
-      [buttonStart, buttonControls].forEach((btn) => {
+      [subline1, subline2, buttonStart, buttonControls].forEach((btn) => {
         btn.setVisible(true);
       });
       howToPlay.setPosition(this.game.config.width >> 1, this.game.config.height);

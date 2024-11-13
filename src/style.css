@@ -23,6 +23,7 @@
     align-items: center;
     font-family: "Open Sans", Lato, sans-serif;
     color: #191919;
+    background-color: #f2f6fa;
   }
 
   .btn {
@@ -48,11 +49,12 @@
   }
 
   .hero {
-    padding: max(6rem, 5lvh) 1rem 0;
-    min-height: 100svh;
+    padding: 3vw 1rem 0;
+    min-height: max(100lvh, 56.25vw);
     position: relative;
-    justify-content: center;
+    justify-content: start;
     gap: 1.5rem;
+    background-color: #ffffff;
 
     & .heroBgMountains {
       width: 100%;
@@ -60,7 +62,6 @@
       position: absolute;
       right: 0;
       bottom: 0;
-      z-index: -1;
       @media screen and (orientation: portrait) {
         width: auto;
         height: 50%;
@@ -72,58 +73,78 @@
       position: absolute;
       left: 0;
       bottom: 0;
-      z-index: -1;
       object-fit: cover;
     }
 
-    & .headline {
-      position: relative;
-      color: var(--accentColor);
-      font-size: 1.75rem;
-      font-weight: 700;
-      text-align: center;
-      text-wrap: balance;
-      line-height: 1.2;
-      @media screen and (min-width: 768px) {
-        font-size: 2.5rem;
-      }
-      &::before {
-        content: url("/img/20JahreIkoLogo.svg");
-        width: clamp(5rem, 7.5vw, 300px);
-        height: clamp(5rem, 7.5vw, 300px);
-        display: block;
-        position: absolute;
-        left: clamp(2rem, 7.5vw, 300px);
-        top: 0;
-        transform: translateY(-100%) rotate(-12deg);
-      }
-    }
-    & .subline {
-      font-size: 1.33rem;
-      font-weight: 600;
-      line-height: 1.2;
-      @media screen and (min-width: 768px) {
-        font-size: 1.66rem;
-      }
-    }
-    & .text {
-      width: 100%;
-      max-width: 600px;
-      font-size: 1rem;
-      text-align: left;
-      text-wrap: pretty;
-      text-shadow: 0 0 3px #fff, 0 0 1rem #fff, 0 0 2rem #fff;
-      & b {
+    & .heroTextCont {
+      padding-top: clamp(5rem, 7.5vw, 300px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      isolation: isolate;
+
+      & .headline {
+        position: relative;
         color: var(--accentColor);
+        font-size: 1.75rem;
         font-weight: 700;
+        text-align: center;
+        text-wrap: balance;
+        line-height: 1.2;
+        @media screen and (min-width: 768px) {
+          font-size: 2.5rem;
+        }
+        &::before {
+          content: url("/img/20JahreIkoLogo.svg");
+          width: clamp(5rem, 7.5vw, 300px);
+          height: clamp(5rem, 7.5vw, 300px);
+          display: block;
+          position: absolute;
+          left: clamp(2rem, 7.5vw, 300px);
+          top: 0;
+          transform: translateY(-100%) rotate(-12deg);
+        }
       }
-    }
-    & .btn {
-      margin-top: 1.5rem;
-      margin-bottom: 25lvh;
+      & .subline {
+        font-size: 1.33rem;
+        font-weight: 600;
+        line-height: 1.2;
+        @media screen and (min-width: 768px) {
+          font-size: 1.66rem;
+        }
+      }
+      & .text {
+        width: 100%;
+        max-width: 600px;
+        font-size: 1rem;
+        text-align: left;
+        text-wrap: pretty;
+        text-shadow: 0 0 3px #fff, 0 0 1rem #fff, 0 0 2rem #fff;
+        @media screen and (min-width: 768px) {
+          max-width: 700px;
+          font-size: 1.2rem;
+        }
+        & b {
+          color: var(--accentColor);
+          font-weight: 700;
+        }
+      }
+      & .btn {
+        margin-top: 1.5rem;
+        margin-bottom: 25lvh;
+      }
     }
   }
-
+  .prizesHeadline {
+    padding: 1rem 0;
+    font-size: 2rem;
+    font-weight: 700;
+    @media screen and (min-width: 768px) {
+      padding: 2rem 0;
+      font-size: 2.5rem;
+    }
+  }
   .prizesCont {
     margin-bottom: 5rem;
     width: 100%;
@@ -134,7 +155,6 @@
     @media screen and (min-width: 768px) {
       gap: 5vw;
     }
-    background: linear-gradient(to bottom, #fffcf4, #fff);
 
     & .prize {
       max-width: 45vw;

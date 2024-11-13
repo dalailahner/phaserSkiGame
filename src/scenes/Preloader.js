@@ -53,8 +53,8 @@ export class Preloader extends Scene {
       frameHeight: 334,
     });
     this.load.spritesheet("howToPlay", "howToPlay.png", {
-      frameWidth: 2048,
-      frameHeight: 986,
+      frameWidth: 1024,
+      frameHeight: 494,
     });
     this.load.spritesheet("buttonClose", "buttonClose.png", {
       frameWidth: 270,

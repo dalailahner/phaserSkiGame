@@ -2,7 +2,7 @@
   "name": "phaserskigame",
   "private": true,
   "description": "A 2D sidescrolling skiing game made with Phaser 3",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "author": "dalailahner",
   "license": "GLWTS",
   "type": "module",
@@ -12,9 +12,12 @@
     "2D",
     "ski"
   ],
+  "workspaces": [
+    "decodeScoreTool"
+  ],
   "scripts": {
-    "dev": "vite --host --config vite/config.dev.mjs",
-    "build": "vite build --config vite/config.prod.mjs"
+    "dev": "vite --host",
+    "build": "vite build"
   },
   "devDependencies": {
     "browserslist": "^4.24.2",

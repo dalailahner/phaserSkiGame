@@ -4,6 +4,7 @@ import browserslist from "browserslist";
 
 export default defineConfig({
   base: "./",
+  logLevel: "warning",
   css: {
     transformer: "lightningcss",
     lightningcss: {
@@ -11,16 +12,11 @@ export default defineConfig({
     },
   },
   build: {
+    emptyOutDir: true,
     cssMinify: "lightningcss",
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          phaser: ["phaser"],
-        },
-      },
-    },
   },
+  outDir: "../dist/subproject",
   server: {
-    port: 8080,
+    port: 8081,
   },
 });

@@ -1,20 +1,11 @@
 {
-  "name": "phaserskigame",
+  "name": "phaserskigame.decodescoretool",
   "private": true,
-  "description": "A 2D sidescrolling skiing game made with Phaser 3",
-  "version": "1.0.0",
+  "description": "decode tool for the obfuscated score value in the exported .xls",
+  "version": "0.0.0",
   "author": "dalailahner",
   "license": "GLWTS",
   "type": "module",
-  "keywords": [
-    "Phaser3",
-    "game",
-    "2D",
-    "ski"
-  ],
-  "workspaces": [
-    "decodeScoreTool"
-  ],
   "scripts": {
     "dev": "vite --host",
     "build": "vite build"
@@ -22,12 +13,11 @@
   "devDependencies": {
     "browserslist": "^4.24.2",
     "lightningcss": "^1.28.1",
-    "terser": "^5.36.0",
     "vite": "^5.4.11"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
-    "noicss.reset": "^1.3.1",
-    "phaser": "^3.87.0"
+    "exceljs": "^4.4.0",
+    "noicss.reset": "^1.3.1"
   }
 }

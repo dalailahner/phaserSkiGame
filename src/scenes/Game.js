@@ -650,7 +650,13 @@ export class Game extends Scene {
         if (this.scale.isFullscreen) {
           this.scale.stopFullscreen();
         }
-        window.top.open(`https://forms.sn.at/iko-gewinnspiel/?score=${encodeURIComponent(obfuscatedScore)}`);
+        const raffleLink = document.createElement("a");
+        raffleLink.href = `https://forms.sn.at/iko-gewinnspiel/?score=${encodeURIComponent(obfuscatedScore)}`;
+        raffleLink.target = "_top";
+        raffleLink.style.opacity = "0";
+        raffleLink.style.position = "absolute";
+        document.body.appendChild(raffleLink);
+        raffleLink.click();
       });
     }
   }

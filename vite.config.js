@@ -3,6 +3,7 @@ import { browserslistToTargets } from "lightningcss";
 import browserslist from "browserslist";
 
 export default defineConfig({
+  root: ".",
   base: "./",
   logLevel: "warning",
   css: {

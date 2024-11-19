@@ -8,6 +8,7 @@ export class MainMenu extends Scene {
   init(data) {
     this.productsAmount = data.productsAmount;
     this.isTouchDevice = false;
+    this.hoverBtns = [];
     window.addEventListener("touchstart", () => {
       this.isTouchDevice = true;
     });
@@ -63,24 +64,6 @@ export class MainMenu extends Scene {
       })
       .setOrigin(0.5);
 
-    // ORIENTATION CHECK
-    this.overlay = this.add.graphics();
-    this.overlay.setDepth(90);
-    this.overlay.fillStyle(0x000000, 0.8);
-    this.overlay.fillRect(0, 0, this.game.config.width, this.game.config.height);
-    this.orientationText = this.add
-      .text(this.game.config.width >> 1, this.game.config.height >> 1, "Drehe das Gerät\nfür ein besseres\nSpielerlebnis.", {
-        fontFamily: "'Open Sans', sans-serif",
-        fontSize: 72,
-        fontStyle: "bold",
-        color: "#f5f5f5",
-        align: "center",
-      })
-      .setOrigin(0.5)
-      .setDepth(91);
-    this.checkOriention();
-    this.scale.on("orientationchange", this.checkOriention, this);
-
     // BUTTONS & UI
     const buttonFullscreen = this.add
       .sprite(this.game.config.width - 100, 80, "buttonFullscreen", 0)
@@ -107,8 +90,8 @@ export class MainMenu extends Scene {
       .setVisible(false);
 
     //   hover
-    const hoverBtns = [buttonFullscreen, buttonStart, buttonControls, buttonCloseControls];
-    hoverBtns.forEach((btn) => {
+    this.hoverBtns = [buttonFullscreen, buttonStart, buttonControls, buttonCloseControls];
+    this.hoverBtns.forEach((btn) => {
       btn.on("pointerover", () => {
         btn.setFrame(1);
         this.tweens.add({
@@ -128,6 +111,33 @@ export class MainMenu extends Scene {
         });
       });
     });
+
+    // ORIENTATION CHECK
+    this.overlay = this.add.graphics();
+    this.overlay.setDepth(90);
+    this.overlay.fillStyle(0x000000, 0.8);
+    this.overlay.fillRect(0, 0, this.game.config.width, this.game.config.height);
+    this.orientationText = this.add
+      .text(this.game.config.width >> 1, this.game.config.height * 0.4, "Drehe das Gerät\nfür ein besseres\nSpielerlebnis.", {
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: 72,
+        fontStyle: "bold",
+        color: "#f5f5f5",
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(91);
+    this.closeOverlayText = this.add
+      .text(this.game.config.width >> 1, this.game.config.height * 0.75, "[schließen]", {
+        fontFamily: "'Open Sans', sans-serif",
+        fontSize: 41,
+        color: "#f5f5f5",
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(92);
+    this.checkOriention();
+    this.scale.on("orientationchange", this.checkOriention, this);
 
     // EVENTS
     //   toggle fullscreen
@@ -182,15 +192,41 @@ export class MainMenu extends Scene {
         this.scene.start("Game", { productsAmount: this.productsAmount, isTouchDevice: this.isTouchDevice });
       }, 1);
     });
+    //   hide OrientationOverlay
+    this.closeOverlayText.on("pointerdown", () => {
+      this.showOrientationOverlay(false);
+    });
   }
 
   checkOriention() {
     if (this.scale.isPortrait) {
-      this.overlay.setVisible(true);
-      this.orientationText.setVisible(true);
+      this.showOrientationOverlay(true);
       return;
     }
-    this.overlay.setVisible(false);
-    this.orientationText.setVisible(false);
+    this.showOrientationOverlay(false);
+  }
+
+  showOrientationOverlay(bool = true) {
+    if (bool) {
+      this.hoverBtns.forEach((btn) => {
+        btn.disableInteractive();
+      });
+      this.overlay.setVisible(true);
+      this.orientationText.setVisible(true);
+      this.closeOverlayText.setVisible(true);
+      this.closeOverlayText.setInteractive({ useHandCursor: true });
+      return;
+    }
+    if (!bool) {
+      this.hoverBtns.forEach((btn) => {
+        btn.setInteractive({ useHandCursor: true });
+      });
+      this.overlay.setVisible(false);
+      this.orientationText.setVisible(false);
+      this.closeOverlayText.setVisible(false);
+      this.closeOverlayText.disableInteractive();
+      return;
+    }
+    console.log("Bool is not a boolean:", bool);
   }
 }

@@ -4,6 +4,7 @@ import browserslist from "browserslist";
 
 export default defineConfig({
   base: "./",
+  publicDir: "../public",
   logLevel: "warning",
   css: {
     transformer: "lightningcss",
@@ -14,8 +15,9 @@ export default defineConfig({
   build: {
     emptyOutDir: true,
     cssMinify: "lightningcss",
+    outDir: "../dist/decodeScoreTool",
+    copyPublicDir: false,
   },
-  outDir: "../dist/subproject",
   server: {
     port: 8081,
   },

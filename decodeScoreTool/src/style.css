@@ -96,7 +96,7 @@
           font-size: 2.5rem;
         }
         &::before {
-          content: url("/img/20JahreIkoLogo.svg");
+          content: url("../img/20JahreIkoLogo.svg");
           width: clamp(5rem, 7.5vw, 300px);
           height: clamp(5rem, 7.5vw, 300px);
           display: block;

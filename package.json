@@ -20,14 +20,14 @@
     "build": "vite build"
   },
   "devDependencies": {
-    "browserslist": "^4.24.2",
-    "lightningcss": "^1.28.1",
-    "terser": "^5.36.0",
-    "vite": "^5.4.11"
+    "browserslist": "^4.28.1",
+    "lightningcss": "^1.31.1",
+    "terser": "^5.46.0",
+    "vite": "^7.3.1"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
-    "noicss.reset": "^1.3.1",
-    "phaser": "^3.87.0"
+    "noicss.reset": "^1.15.0",
+    "phaser": "^3.90.0"
   }
 }

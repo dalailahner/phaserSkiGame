@@ -22,7 +22,7 @@
   "devDependencies": {
     "browserslist": "^4.28.2",
     "lightningcss": "^1.32.0",
-    "vite": "^8.0.7"
+    "vite": "8.x.x"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
